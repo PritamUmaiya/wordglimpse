@@ -25,3 +25,8 @@ function openSearch() {
 function closeSearch() {
     document.getElementById('searchContainer').classList.add('d-none');
 }
+
+// Toggle Arrow for category in Left menu
+function toggleArrow() {
+    document.getElementById('keyArrDown').classList.toggle('rotate-180');
+}

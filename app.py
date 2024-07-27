@@ -3,7 +3,7 @@ from flask import Flask, send_from_directory
 from flask_session import Session
 
 from user.main import main_bp
-from user.helpers import apology
+from user.helpers import apology, CATEGORIES
 
 app = Flask(__name__)
 
@@ -31,6 +31,13 @@ def after_request(response):
 # Register the Blueprint
 app.register_blueprint(main_bp)
 
+
+@app.context_processor
+def inject_categories():
+    """Inject categories into the template context"""
+    return dict(categories=CATEGORIES)
+
+
 """Send users directory"""
 @app.route('/uploads/avatar/<filename>')
 def uploaded_avatar(filename):
@@ -51,6 +58,7 @@ def uploaded_post(filename):
 def page_not_found(e):
     """Handle Not Found Error"""
     return apology('Page not found!', 404)
+
 
 @app.errorhandler(500)
 def internale_server_error(e):
