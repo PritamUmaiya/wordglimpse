@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <!--Title-->
+    <title>{{ code }}</title>
+{% endblock %}
+
+<!--Change Background Color-->
+{% block bgColor %}
+    bg-body
+{% endblock %}
+
+{% block body %}
+<div class="p-2 mt-5 text-center">
+    <h1 class="display-1">{{ code }}</h1>
+    <p>{{ message }}</p>
+    <p><small>Back to <a href="/" title="Home">homepage</a></small></p>
+</div>
+{% endblock %}

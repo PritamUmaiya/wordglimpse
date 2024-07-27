@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script src="/static/js/login.js"></script>
+    <!--Title-->
+    <title>Login</title>
+{% endblock %}
+
+<!--Change Background Color-->
+{% block bgColor %}
+    bg-body
+{% endblock %}
+
+{% block body %}
+
+    <section class="d-block m-auto p-2" style="width:100%; max-width: 700px;">
+        <div class="mt-5 mb-3 text-center">
+            <img src="/static/image/icon.png" alt="wordglimpse" style="width:70px;">
+        </div>
+        <div class="mb-5">
+            <h3 class="text-center">Login</h3>
+        </div>
+
+        <form action="/login" method="post">
+            <!--Validate Email-->
+            <div class="mb-3">
+                <div class="input-group has-validation">
+                    <div class="form-floating is-invalid">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Email" autocomplete="off">
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="invalid-feedback" id="emailError"></div>
+                </div>
+            </div>
+            <!--Validate Password-->
+            <div class="mb-3">
+                <div class="input-group has-validation">
+                    <div class="form-floating is-invalid">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" autocomplete="off">
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="invalid-feedback" id="passwordError"></div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary d-block m-auto" style="width: 100%; max-width:400px;">Login</button>
+            </div>
+            <p class="text-center text-small text-danger d-none" id="authError"></p>
+        </form>
+
+        <div class="mb-3">
+            <p class="text-center"><small>Don't have an account? <a href="/signup" title="Signup">signup</a></small></p>
+        </div>
+
+    </section>
+
+{% endblock %}
