@@ -1,0 +1,48 @@
+/* --- HEADER --- */
+header {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--bs-border-color-translucent);
+    z-index: 999;
+}
+
+/* === Extra small devices === */
+@media screen and (max-width:575px) {
+    /* Search Container full page */
+    #searchContainer {
+        position: fixed;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        z-index: 1000;
+        background-color: var(--bs-tertiary-bg);
+    }
+    #searchForm {
+        border-bottom: 1px solid var(--bs-border-color-translucent);
+        padding: 4px 0;
+    }
+}
+
+/* === Small device: sm === */
+@media screen and (min-width:576px) {
+    /* Adding shadow to search Container */
+    #searchContainer {
+        background-color: var(--bs-body-bg);
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-right: 10px;
+    }
+    #searchForm {
+        padding: 0;
+        border: 1px solid var(--bs-border-color-translucent);
+        border-radius: 5px;
+    }
+    #searchInput {
+        border:none;
+    }
+}
+
+/* === Medium devies: md === */
+@media screen and (min-width:768px) {
+   
+}

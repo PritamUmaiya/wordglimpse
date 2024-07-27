@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <!--Title-->
+    <title>
+        {% block title %}Wordglimpse{% endblock %}
+    </title>
+{% endblock %}
+
+{% block body %}
+    <!-- ==== HEADER ==== -->
+    <header class="fixed-top bg-body d-flex flex-row justify-content-between align-items-center">
+        <!--Left Menu Btn-->
+        <button type="button" class="btn" title="Menu" data-bs-toggle="offcanvas" data-bs-target="#leftMenu" aria-controls="leftMenu"><i class="material-symbols-rounded">menu</i></button>
+        <!--Logo-->
+        <a href="/" title="Wordglimpse" class="navbar-brand">WORDGLIMPSE</a>
+        <!--Search Container-->
+        <div class="d-none d-sm-inline-block" id="searchContainer">
+            <form action="/search" method="get" class="bg-body d-flex flex-row align-items-center" id="searchForm">
+                <button type="button" class="btn d-sm-none" onclick="closeSearch()"><i
+                        class="material-symbols-rounded">arrow_back_ios</i></button>
+                <input class="form-control" type="search" name="q" id="searchInput" placeholder="Search.."
+                    autocomplete="off" autofocus>
+                <button type="submit" class="btn" title="Search"><i class="material-symbols-rounded">search</i></button>
+            </form>
+        </div>
+        <!--Search btn for extra small devices-->
+        <button type="button" class="btn d-sm-none" title="Search" onclick="openSearch()"><i class="material-symbols-rounded">search</i></button>
+    </header>
+{% endblock %}
