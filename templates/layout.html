@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block head %}
+    <script src="/static/js/load_content.js"></script>
+    <!--Page specificc script-->
+    {% block script %}{% endblock %}
     <!--Title-->
     <title>
         {% block title %}Wordglimpse{% endblock %}
@@ -34,7 +37,7 @@
         </button>
     </header>
 
-    <!-- ==== Right Menu ==== -->
+    <!-- ==== Left Menu ==== -->
     <section class="offcanvas offcanvas-start bg-body-tertiary" tabindex="-1" id="leftMenu" aria-labelledby="leftMenu">
         <div class="offcanvas-header">
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -101,41 +104,69 @@
                 </div>
             </div>
         </div>
-        <div class="p-1">
+        <div class="p-3">
             <small><a href="/about" title="About" class="text-body-secondary d-inline-block p-1">About</a></small>
             <small><a href="/feedback" title="Feedback" class="text-body-secondary d-inline-block p-1">Feedback</a></small>
         </div>
     </section>
 
+    <!-- ==== MAIN SECTION ==== -->
+    <main class="tab-content main bg-body" id="mainTabContent">
+        <!-- CONTENT TAB for other pages like search result, profile etc -->
+        <div class="tab-pane fade" id="content-tab-pane" role="tabpanel" aria-labelledby="content-tab" tabindex="0">
+            {% block content %}
+                <div class="text-center mt-5">
+                    <h5>Sorry! we could not find, what you are looking for.</h5>
+                </div>
+            {% endblock %}
+        </div>
+        <!--HOME TAB-->
+        <div class="tab-pane fade" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            Home content goes here...
+        </div>
+        {% if user %}
+        <!--FOLLOWING TAB-->
+        <div class="tab-pane fade" id="following-tab-pane" role="tabpanel" aria-labelledby="following-tab" tabindex="0">
+            Following content goes here...
+        </div>
+        <!--SAVED TAB-->
+        <div class="tab-pane fade" id="saved-tab-pane" role="tabpanel" aria-labelledby="saved-tab" tabindex="0">
+            Saved content goes here...
+        </div>
+        {% endif %}
+    </main>
+
     <!-- ==== BOTTOM NAV ==== -->
     <nav class="sidenav-md-left d-block d-md-flex flex-column justify-content-between bg-body">
         <div class="bottom-nav bg-body" role="tablist">
-            <button class="btn btn-sm" type="button" title="Home" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" role="tab" aria-controls="home-tab-pane" aria-selected="false" onclick="change_url('/')">
+            <button class="btn active" type="button" title="Home" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" role="tab" aria-controls="home-tab-pane" aria-selected="false" onclick="load_content('/')">
                 <i class="bi bi-house"></i>
                 <span>Home</span>
             </button>
-            <button class="btn btn-sm" type="button" title="Following" {% if user %} id="following-tab" data-bs-toggle="tab" data-bs-target="#following-tab-pane" role="tab" aria-controls="following-tab-pane" aria-selected="true" onclick="change_url('/following')" {% else %} data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {%endif %}>
+            <button class="btn" type="button" title="Following" {% if user %} id="following-tab" data-bs-toggle="tab" data-bs-target="#following-tab-pane" role="tab" aria-controls="following-tab-pane" aria-selected="true" onclick="load_content('/following')" {% else %} data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {%endif %}>
                 <i class="bi bi-collection"></i>
                 <span>Following</span>
             </button>
-            <button class="btn btn-sm d-md-none" class="create-post-btn" type="button" title="Create New" {% if user %}
+            <button class="btn d-md-none" type="button" title="Create New" {% if user %}
                 data-bs-toggle="offcanvas" data-bs-target="#newPostCard" aria-controls="newPostCard" {% else %}
                 data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {% endif %}>
-                <i class="bi bi-plus bg-primary rounded-circle px-2" style="font-size:35px;"></i>
+                <i class="bi bi-plus bg-primary text-white rounded-circle px-2" style="font-size:35px;"></i>
             </button>
-            <button class="btn btn-sm" type="button" title="Saved" {% if user %} id="saved-tab" data-bs-toggle="tab"
+            <button class="btn" type="button" title="Saved" {% if user %} id="saved-tab" data-bs-toggle="tab"
                 data-bs-target="#saved-tab-pane" role="tab" aria-controls="saved-tab-pane" aria-selected="true"
-                onclick="change_url('/saved')" {% else %} data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {%
+                onclick="load_content('/saved')" {% else %} data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {%
                 endif %}>
                 <i class="bi bi-bookmark"></i>
                 <span>Saved</span>
             </button>
-            <button class="btn btn-sm" type="button" title="Account" {% if user %} data-bs-toggle="offcanvas"
+            <button class="btn" type="button" title="Account" {% if user %} data-bs-toggle="offcanvas"
                 data-bs-target="#sideNav" aria-controls="sideNav" {% else %} data-bs-toggle="modal"
                 data-bs-target="#loginRequiredModal" {% endif %}>
-                {% if user %}<img
-                    src="{% if user['avatar'] %}{{ user['avatar'] }}{% else %}/static/image/user.png{% endif %}"
-                    title="Account">{% else %}<i class="bi bi-person-circle"></i>{% endif %}
+                {% if user %}
+                    <img src="{% if user.avatar %}{{ user.avatar }}{% else %}/static/image/user.png{% endif %}" title="Account">
+                {% else %}
+                    <i class="bi bi-person-circle"></i>
+                {% endif %}
                 <span>Account</span>
             </button>
         </div>
@@ -151,4 +182,24 @@
         </div>
     </nav>
     
+    <!-- Modals if user is logged in and if not logged in trigger login required modal -->
+    {% if user %}
+
+    {% else %}
+        <!-- LOGIN Required Modal -->
+        <div class="modal" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="d-flex flex-row justify-content-between align-items-center"><span>Login to continue</span>
+                        <a href="/login" class="btn btn-primary" title="login">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+     
 {% endblock %}
