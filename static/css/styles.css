@@ -2,18 +2,18 @@
 ::-webkit-scrollbar {
     display: none;
 }
+.bi {
+    font-size: 20px;
+}
 * {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
 .btn {
     border:none;
 }
-.icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 .accordion-button::after, .accordion-collapse {
     transition: all 0.1s;
 }
@@ -33,7 +33,7 @@
 
 /* --- HEADER --- */
 header {
-    padding: 5px 0;
+    padding: 0.5px 0;
     border-bottom: 1px solid var(--bs-border-color-translucent);
     z-index: 999;
 }
@@ -68,6 +68,39 @@ header {
     transform: rotate(180deg);
 }
 
+
+/* === BOTTOM NAV === */
+.sidenav-md-left {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    border-top: 1px solid var(--bs-border-color-translucent);
+}
+.bottom-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+.bottom-nav > .btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottom-nav > .btn img {
+    width: 23px;
+    height: 23px;
+    object-fit: cover;
+    border: 2px solid var(--bs-body-color);
+    border-radius: 50%;
+}
+.bottom-nav > .btn span {
+    font-size: 70%;
+}
 /* === Extra small devices === */
 @media screen and (max-width:575px) {
     /* Search Container full page */
@@ -107,5 +140,29 @@ header {
 
 /* === Medium devies: md === */
 @media screen and (min-width:768px) {
-   
+   /* Bottom Nav Becomes Sidenav */
+   .sidenav-md-left {
+        top: 63px;
+        width: 25%;
+        padding: 10px;
+        border-right: 1px solid var(--bs-border-color-translucent);
+    }
+    .bottom-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .bottom-nav > .btn {
+        width: 100%;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 10px;
+        margin-bottom: 1px;
+    }
+    .bottom-nav > .btn.active,.bottom-nav > .btn:hover {
+        background-color: var(--bs-tertiary-bg);
+    }
+    .bottom-nav > .btn span {
+        font-size: 100%;
+    }
 }

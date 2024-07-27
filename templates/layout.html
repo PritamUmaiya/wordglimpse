@@ -12,11 +12,7 @@
     <header class="fixed-top bg-body d-flex flex-row justify-content-between align-items-center">
         <!--Left Menu Btn-->
         <button type="button" class="btn" title="Menu" data-bs-toggle="offcanvas" data-bs-target="#leftMenu" aria-controls="leftMenu">
-            <i class="icon-container">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-                </svg>
-            </i>
+            <i class="bi bi-list" style="font-size:25px;"></i>
         </button>
         <!--Logo-->
         <a href="/" title="Wordglimpse" class="navbar-brand">WORDGLIMPSE</a>
@@ -24,30 +20,17 @@
         <div class="d-none d-sm-inline-block" id="searchContainer">
             <form action="/search" method="get" class="bg-body d-flex flex-row align-items-center" id="searchForm">
                 <button type="button" class="btn d-sm-none" onclick="closeSearch()">
-                    <i class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                    </i>
+                    <i class="bi bi-chevron-left"></i>
                 </button>
-                <input class="form-control" type="search" name="q" id="searchInput" placeholder="Search.."
-                    autocomplete="off" autofocus>
+                <input class="form-control" type="search" name="q" id="searchInput" placeholder="Search.." autocomplete="off" autofocus>
                 <button type="submit" class="btn" title="Search">
-                    <i class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                        </svg>
-                    </i>
+                    <i class="bi bi-search"></i>
                 </button>
             </form>
         </div>
         <!--Search btn for extra small devices-->
         <button type="button" class="btn d-sm-none" title="Search" onclick="openSearch()">
-            <i class="icon-container">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                </svg>
-            </i>
+            <i class="bi bi-search"></i>
         </button>
     </header>
 
@@ -60,29 +43,15 @@
             <!--First div-->
             <div class="offcanvas-div card bg-body">
                 <a href="/popular" class="btn div-item" title="Popular">
-                    <i class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
-                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
-                        </svg>
-                    </i>
+                    <i class="bi bi-star"></i>
                     <span>Popular</span>
                 </a>
                 <a href="/recent" class="btn div-item" title="Recent">
-                    <i class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
-                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
-                        </svg>
-                    </i>
+                    <i class="bi bi-clock"></i>
                     <span>Recent</span>
                 </a>
                 <a href="/author" class="btn div-item" title="Author">
-                    <i class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-check" viewBox="0 0 16 16">
-                            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                            <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
-                        </svg>
-                    </i>
+                    <i class="bi bi-person-fill-check"></i>
                     <span>Author</span>
                 </a>
             </div>
@@ -92,11 +61,7 @@
                     data-bs-toggle="collapse" data-bs-target="#collapseAccordion" aria-expanded="true"
                     aria-controls="collapseAccordion" onclick="toggleArrow()">
                     <span>Categories</span>
-                    <i class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16" id="keyArrDown">
-                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </i>
+                    <i class="bi bi-chevron-down" id="keyArrDown"></i>
                 </button>
                 <div id="collapseAccordion" class="collapse" data-bs-parent="#categoryAccordion">
                     <ul class="list-unstyled">
@@ -112,10 +77,7 @@
             <div class="offcanvas-div card bg-body p-3">
                 <div class="d-flex flex-row align-items-center mb-3" style="gap: 10px;">
                     <i class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
-                            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
-                            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
-                        </svg>
+                        <i class="bi bi-gear"></i>
                     </i>
                     <span>Settings</span>
                 </div>
@@ -144,4 +106,49 @@
             <small><a href="/feedback" title="Feedback" class="text-body-secondary d-inline-block p-1">Feedback</a></small>
         </div>
     </section>
+
+    <!-- ==== BOTTOM NAV ==== -->
+    <nav class="sidenav-md-left d-block d-md-flex flex-column justify-content-between bg-body">
+        <div class="bottom-nav bg-body" role="tablist">
+            <button class="btn btn-sm" type="button" title="Home" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" role="tab" aria-controls="home-tab-pane" aria-selected="false" onclick="change_url('/')">
+                <i class="bi bi-house"></i>
+                <span>Home</span>
+            </button>
+            <button class="btn btn-sm" type="button" title="Following" {% if user %} id="following-tab" data-bs-toggle="tab" data-bs-target="#following-tab-pane" role="tab" aria-controls="following-tab-pane" aria-selected="true" onclick="change_url('/following')" {% else %} data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {%endif %}>
+                <i class="bi bi-collection"></i>
+                <span>Following</span>
+            </button>
+            <button class="btn btn-sm d-md-none" class="create-post-btn" type="button" title="Create New" {% if user %}
+                data-bs-toggle="offcanvas" data-bs-target="#newPostCard" aria-controls="newPostCard" {% else %}
+                data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {% endif %}>
+                <i class="bi bi-plus bg-primary rounded-circle px-2" style="font-size:35px;"></i>
+            </button>
+            <button class="btn btn-sm" type="button" title="Saved" {% if user %} id="saved-tab" data-bs-toggle="tab"
+                data-bs-target="#saved-tab-pane" role="tab" aria-controls="saved-tab-pane" aria-selected="true"
+                onclick="change_url('/saved')" {% else %} data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {%
+                endif %}>
+                <i class="bi bi-bookmark"></i>
+                <span>Saved</span>
+            </button>
+            <button class="btn btn-sm" type="button" title="Account" {% if user %} data-bs-toggle="offcanvas"
+                data-bs-target="#sideNav" aria-controls="sideNav" {% else %} data-bs-toggle="modal"
+                data-bs-target="#loginRequiredModal" {% endif %}>
+                {% if user %}<img
+                    src="{% if user['avatar'] %}{{ user['avatar'] }}{% else %}/static/image/user.png{% endif %}"
+                    title="Account">{% else %}<i class="bi bi-person-circle"></i>{% endif %}
+                <span>Account</span>
+            </button>
+        </div>
+        <!-- Post Button for medium devices -->
+        <div class="d-none d-md-flex justify-content-center align-items-center">
+            <button class="btn btn-sm p-0 btn-primary d-flex justify-content-center align-items-center" type="button"
+                title="Create New" style="width:100%;max-width: 300px;" {% if user %} data-bs-toggle="offcanvas"
+                data-bs-target="#newPostCard" aria-controls="newPostCard" {% else %} data-bs-toggle="modal"
+                data-bs-target="#loginRequiredModal" {% endif %}>
+                <i class="bi bi-plus" style="font-size:35px;"></i>
+                <span>Create New</span>
+            </button>
+        </div>
+    </nav>
+    
 {% endblock %}
