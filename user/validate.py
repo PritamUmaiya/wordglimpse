@@ -1,14 +1,62 @@
 from cs50 import SQL
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 import json
 import re
 from werkzeug.security import check_password_hash
+from user.helpers import CATEGORIES, allowed_file, login_required
 
 
 validate_bp = Blueprint('validate', __name__)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///wg.db")
+
+
+@validate_bp.route("/validate_post", methods=["POST"])
+@login_required
+def validate_post():
+    """Validate Post"""
+    # Get form data
+    title = request.form.get("post-title")
+    category = request.form.get("post-category")
+    content = request.form.get("post-content")
+
+    # Validate form data
+    errors = []
+
+    if 'post-image' not in request.files:
+        errors.append({"image": "Please select an image!"})
+
+    file = request.files['post-image']
+    if file.filename == '':
+        errors.append({"image": "Please select an image!"})
+
+    elif not allowed_file(file.filename):
+        errors.append({"image": "Please select images only!"})
+    
+    # Make sure file size does not exceed 16MB
+    if file and file.content_length > current_app.config['MAX_CONTENT_LENGTH']:
+        errors.append({"image": "Please select an image less than 16MB!"})
+
+    if not title:
+        errors.append({"title": "Please enter a title!"})
+    
+    elif len(title) > 100 or len(title) < 5:
+        errors.append({"title": "Title must be between 5 and 100 characters!"})
+    
+    if not category:
+        errors.append({"category": "Please select a category!"})
+    
+    elif category not in CATEGORIES:
+        errors.append({"category": "Please select a valid category!"})
+
+    if not content:
+        errors.append({"content": "Please enter your content!"})
+    
+    elif len(content) > 1000 or len(content) < 200:
+        errors.append({"content": "Content must be between 200 and 1000 characters!"})
+
+    return json.dumps(errors)
 
 
 @validate_bp.route("/validate_name", methods=["POST"])

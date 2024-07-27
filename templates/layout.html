@@ -2,6 +2,9 @@
 
 {% block head %}
     <script src="/static/js/load_content.js"></script>
+    {% if user %}
+        <script src="/static/js/create_post.js"></script>
+    {% endif %}
     <!--Page specificc script-->
     {% block script %}{% endblock %}
     <!--Title-->
@@ -184,7 +187,115 @@
     
     <!-- Modals if user is logged in and if not logged in trigger login required modal -->
     {% if user %}
-
+        <!-- ==== SIDENAV account menu -->
+        <section class="offcanvas offcanvas-end bg-body-tertiary" tabindex="-1" id="sideNav" aria-labelledby="sidenNavLabel">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="mb-3">
+                    <a href="/profile" title="Visit your profile" class="sidenav-link card">
+                        <img src="{% if user['avatar'] %}{{ user['avatar'] }}{% else %}/static/image/user.png{% endif %}" class="sidenav-link-img" alt="User">
+                        <span>Your Profile</span>
+                    </a>
+                </div>
+                <div class="mb-3">
+                    <a href="/profile/edit" title="Edit Profile" class="sidenav-link card">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="/posts/manage" title="Manage Posts" class="sidenav-link card">
+                        <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                        <span>Your Posts</span>
+                    </a>
+                    <a href="/followings" title="Followers & Followings" class="sidenav-link card">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Followers & Followings</span>
+                    </a>
+                </div>
+                <div class="mb-3">
+                    <a href="/inbox" title="Your Inbox" class="sidenav-link card">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>Inbox</span>
+                    </a>
+                    <a href="/notifications" title="Notifications" class="sidenav-link card">
+                        <i class="bi bi-bell-fill"></i>
+                        <span>Notifications</span>
+                    </a>
+                </div>
+                <div class="mb-3">
+                    <a href="/account" title="Account settings" class="sidenav-link card">
+                        <i class="bi bi-gear-fill"></i>
+                        <span>Account</span>
+                    </a>
+                    <a href="/privacy" title="Privacy Settings" class="sidenav-link card">
+                        <i class="bi bi-shield-fill"></i>
+                        <span>Privacy</span>
+                    </a>
+                    <a href="/help" title="Help" class="sidenav-link card">
+                        <i class="bi bi-question-circle-fill"></i>
+                        <span>Help</span>
+                    </a>
+                    <a href="/about" title="About" class="sidenav-link card">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>About</span>
+                    </a>
+                </div>
+                <div class="mb-3">
+                    <a href="/logout" title="Logout" class="sidenav-link card">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Log Out</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- CREATE POST OFFCONVAS -->
+        <section class="offcanvas offcanvas-bottom" tabindex="-1" id="newPostCard" aria-labelledby="offcanvasBottomLabel">
+            <div class="offcanvas-header d-flex flex-row justify-content-between">
+                <h5 class="offcanvas-title" id="offcanvasBottomLabel">New Post</h5>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                    <button type="submit" form="postForm" class="btn btn-primary" title="Post" id="postFormSubmit">Post</button>
+                </div>
+            </div>
+            <div class="offcanvas-body small">
+                <form action="/create_post" method="post" id="postForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="hidden" name="post-id" id="postId">
+                        <!-- Onselect the image will be displayed -->
+                        <label for="postImage" class="form-control" id="postImagePreview">
+                            <span class="d-inline-block" style="padding:7px 14px;">Select Image</span>
+                        </label>
+                        <input name="post-image" class="input-file" type="file" id="postImage" accept="image/*">
+                        <small class="text-danger d-none" id="imageError"></small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postTitle" class="form-label">Title</label>
+                        <input name="post-title" id="postTitle" class="form-control" type="text" placeholder="Write a descriptive title" maxlength="100" autocomplete="off">
+                        <small class="text-danger d-none" id="titleError"></small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postCategory" class="form-label">Category</label>
+                        <select name="post-category" id="postCategory" class="form-select" aria-label="categorySelect">
+                            <option selected disabled>Select a category</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}">{{ category|title }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-danger d-none" id="categoryError"></small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postContent" class="form-label">Post Content</label>
+                        <textarea class="form-control" name="post-content" rows="4" placeholder="Start writing.." maxlength="1000"
+                            id="postContent" oninput="countLetter('postContent', 'postContentCount')"></textarea>
+                        <p class="d-flex flex-row justify-content-between p-2">
+                            <span><small class="text-danger d-none" id="contentError"></small></span>
+                            <span><span id="postContentCount">0 </span><span> / 1000</span></span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </section>
     {% else %}
         <!-- LOGIN Required Modal -->
         <div class="modal" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">

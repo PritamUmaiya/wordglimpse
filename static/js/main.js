@@ -30,3 +30,11 @@ function closeSearch() {
 function toggleArrow() {
     document.getElementById('keyArrDown').classList.toggle('rotate-180');
 }
+
+// Count the letters of textarea
+function countLetter(textareaId, counterId) {
+    var textarea = document.getElementById(textareaId);
+    var letterCount = textarea.value.length;
+    var counterDisplay = document.getElementById(counterId);
+    counterDisplay.textContent = letterCount;
+}
