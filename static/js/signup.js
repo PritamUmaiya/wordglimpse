@@ -2,11 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('input', () => {
+            document.querySelector('#fname').classList.remove('is-invalid');
+            document.querySelector('#lname').classList.remove('is-invalid');
             document.querySelector('#email').classList.remove('is-invalid');
             document.querySelector('#password').classList.remove('is-invalid');
+            document.querySelector('#confirmation').classList.remove('is-invalid');
+            document.querySelector('#fnameError').classList.add('d-none');
+            document.querySelector('#lnameError').classList.add('d-none');
             document.querySelector('#emailError').classList.add('d-none');
             document.querySelector('#passwordError').classList.add('d-none');
-            document.querySelector('#authError').classList.add('d-none');
+            document.querySelector('#confirmationError').classList.add('d-none');
         });
     });
     document.querySelector('form').addEventListener('submit', async function(e) {
@@ -14,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Get form data
         let formData = new FormData(this);
         // Send data to the server
-        let response = await fetch('/validate_login', {
+        let response = await fetch('/validate_signup', {
             method: 'POST',
             body: formData
         });
@@ -27,6 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Handle errors
             errors.forEach(error => {
                 for (let field in error) {
+                    if (field == 'fname') {
+                        document.querySelector('#fname').classList.add('is-invalid');
+                        document.querySelector('#fnameError').classList.remove('d-none');
+                        document.querySelector('#fnameError').innerHTML = error[field];
+                    }
+                    if (field == 'lname') {
+                        document.querySelector('#lname').classList.add('is-invalid');
+                        document.querySelector('#lnameError').classList.remove('d-none');
+                        document.querySelector('#lnameError').innerHTML = error[field];
+                    }
                     if (field == 'email') {
                         document.querySelector('#email').classList.add('is-invalid');
                         document.querySelector('#emailError').classList.remove('d-none');
@@ -37,9 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.querySelector('#passwordError').classList.remove('d-none');
                         document.querySelector('#passwordError').innerHTML = error[field];
                     }
-                    if (field == 'auth') {
-                        document.querySelector('#authError').classList.remove('d-none');
-                        document.querySelector('#authError').innerHTML = error[field];
+                    if (field == 'confirmation') {
+                        document.querySelector('#confirmation').classList.add('is-invalid');
+                        document.querySelector('#confirmationError').classList.remove('d-none');
+                        document.querySelector('#confirmationError').innerHTML = error[field];
                     }
                 }
             });

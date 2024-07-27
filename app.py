@@ -1,5 +1,6 @@
+from cs50 import SQL
 from datetime import timedelta
-from flask import Flask, send_from_directory
+from flask import Flask, redirect, send_from_directory, session
 from flask_session import Session
 
 from user.main import main_bp
@@ -19,6 +20,10 @@ app.config['UPLOAD_COVER_FOLDER'] = 'uploads/cover'
 app.config['UPLOAD_POST_FOLDER'] = 'uploads/post'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max file size
 
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///wg.db")
+
+
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -35,7 +40,16 @@ app.register_blueprint(main_bp)
 @app.context_processor
 def inject_categories():
     """Inject categories into the template context"""
-    return dict(categories=CATEGORIES)
+    if session.get("user_id") is None:
+            return dict(categories=CATEGORIES)
+
+    users = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+
+    if len(users) == 0:
+        """If user is not found, logout"""
+        return redirect("/logout")
+
+    return dict(categories=CATEGORIES, user=users[0])
 
 
 """Send users directory"""

@@ -20,6 +20,10 @@
     border-color: #86b7fe;
     box-shadow: none;
 }
+.alert {
+    border-radius: 0;
+    z-index: 10000;
+}
 
 /* --- HEADER --- */
 header {

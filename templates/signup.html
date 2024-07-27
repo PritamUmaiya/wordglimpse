@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script src="/static/js/signup.js"></script>
+    <!--Title-->
+    <title>Signup</title>
+{% endblock %}
+
+<!--Change Background Color-->
+{% block bgColor %}
+    bg-body
+{% endblock %}
+
+{% block body %}
+
+    <section class="d-block m-auto p-2" style="width:100%; max-width: 700px;">
+        <div class="mt-5 mb-3 text-center">
+            <img src="/static/image/icon.png" alt="wordglimpse" style="width:70px;">
+        </div>
+        <div class="mb-5">
+            <h3 class="text-center">Register</h3>
+        </div>
+
+        <form action="/signup" method="post">
+            <!--Validate Name-->
+            <div class="mb-3 d-flex flex-row justify-content-between" style="gap:10px;">
+                <div class="input-group has-validation">
+                    <div class="form-floating is-invalid">
+                        <input type="text" name="fname" class="form-control" id="fname" placeholder="First Name" autocomplete="off" maxlength="20" autofocus>
+                        <label for="fname">First Name</label>
+                    </div>
+                    <div class="invalid-feedback" id="fnameError"></div>
+                </div>
+                <div class="input-group has-validation">
+                    <div class="form-floating is-invalid">
+                        <input type="text" name="lname" class="form-control" id="lname" placeholder="Last Name" autocomplete="off" maxlength="20">
+                        <label for="lname">Last Name</label>
+                    </div>
+                    <div class="invalid-feedback" id="lnameError"></div>
+                </div>
+            </div>
+            <!--Validate Email-->
+            <div class="mb-3">
+                <div class="input-group has-validation">
+                    <div class="form-floating is-invalid">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Email" autocomplete="off">
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="invalid-feedback" id="emailError"></div>
+                </div>
+            </div>
+            <!--Validate Password-->
+            <div class="mb-3">
+                <div class="input-group has-validation">
+                    <div class="form-floating is-invalid">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" autocomplete="off" maxlength="30">
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="invalid-feedback" id="passwordError"></div>
+                </div>
+            </div>
+            <!--Validate Confirmation-->
+            <div class="mb-3">
+                <div class="input-group has-validation">
+                    <div class="form-floating is-invalid">
+                        <input type="password" name="confirmation" class="form-control" id="confirmation" placeholder="Confirm Password" autocomplete="off" maxlength="30">
+                        <label for="confirmation">Confirm Password</label>
+                    </div>
+                    <div class="invalid-feedback" id="confirmationError"></div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary d-block m-auto" style="width: 100%; max-width:400px;">Register</button>
+            </div>
+        </form>
+
+        <div class="mb-3">
+            <p class="text-center"><small>Already have an account? <a href="/login" title="login">login</a></small></p>
+            <p class="text-center"><small>By registering you agree to our <a href="/terms" title="terms">terms</a> of usage.</small></p>
+        </div>
+
+    </section>
+
+{% endblock %}
