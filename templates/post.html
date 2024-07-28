@@ -16,7 +16,7 @@
                         <img src="{% if author.avatar %}{{ author.avatar }}{% else %}/static/image/user.png{% endif %}" alt="Profile Photo" class="post-author-img">
                         <div class="d-flex flex-column">
                             <span>{{ author.fname }}</span>
-                            <small class="text-body-secondary">{{ post.created_at|post_datetime }}</small>
+                            <small class="text-body-secondary">{{ post.created_at|format_date }}</small>
                         </div>
                     </a>
                     {% if user %}

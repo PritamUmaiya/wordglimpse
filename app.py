@@ -1,6 +1,6 @@
 from cs50 import SQL
 from datetime import datetime, timedelta
-from flask import Flask, redirect, send_from_directory, session
+from flask import Flask, redirect, send_from_directory, session, request
 from flask_session import Session
 
 from user.main import main_bp
@@ -37,11 +37,33 @@ def after_request(response):
 app.register_blueprint(main_bp)
 
 # Jinja template filters
-@app.template_filter('post_datetime')
-def format_post_datetime(s):
+@app.template_filter('format_date')
+def format_date(d):
     """Format datetime as string."""
-    s = datetime.strptime(s, '%Y-%m-%d %H:%M:%S')
-    return s.strftime('%d %B %Y')
+    d = datetime.strptime(d, '%Y-%m-%d %H:%M:%S')
+    return d.strftime('%d %B %Y')
+
+@app.template_filter('short_number')
+def short_number_format(value):
+    """Format a number with a short representation (e.g., 1.2k for 1200)."""
+    if value >= 1_000_000:
+        formatted_value = f'{value / 1_000_000:.1f}M'
+    elif value >= 1_000:
+        formatted_value = f'{value / 1_000:.1f}k'
+    else:
+        return str(value)
+
+    # Remove the trailing '.0' if present
+    if formatted_value.endswith('.0k'):
+        formatted_value = formatted_value[:-3] + 'k'
+    elif formatted_value.endswith('.0M'):
+        formatted_value = formatted_value[:-3] + 'M'
+
+    return formatted_value
+
+@app.route("/short_number/<int:value>")
+def short_number(value):
+    return short_number_format(value)
 
 
 @app.context_processor

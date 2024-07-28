@@ -73,12 +73,17 @@
                 <!--Total Posts-->
                 <li>
                     <i class="bi bi-file-earmark-arrow-up-fill"></i>
-                    <span>{{ total_posts }} {% if total_posts == 0 or total_posts == 1 %}Post{% else %}Posts{% endif %}</span>
+                    <span>
+                        {{ total_posts|short_number }} {% if total_posts == 0 or total_posts == 1 %}Post{% else %}Posts{% endif %}
+                    </span>
                 </li>
                 <!--Total Followers-->
                 <li>
                     <i class="bi bi-rss-fill"></i>
-                    <span>{{ total_followers }} {% if total_followers == 0 or total_followers == 1 %}Follower{% else %}Followers{% endif %}</span>
+                    <span>
+                        <span id="total_followers" data-total-followers="{{ total_followers }}">{{ total_followers|short_number }}</span>
+                        <span id="total_followers_text">{% if total_followers == 0 or total_followers == 1 %}Follower{% else %}Followers{% endif %}</span>
+                    </span>
                 </li>
                 <!--Facebook-->
                 {% if profile.facebook %}
