@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash
 
 from user.actions import action_bp
 from user.helpers import apology, login_required
+from user.post_handler import post_bp
 from user.validate import validate_bp, validate_signup, validate_login
 
 # Create a Blueprint
@@ -13,6 +14,7 @@ main_bp = Blueprint('main', __name__)
 
 # Register the Blueprints with the main Blueprint
 main_bp.register_blueprint(validate_bp)
+main_bp.register_blueprint(post_bp)
 main_bp.register_blueprint(action_bp)
 
 # Configure CS50 Library to use SQLite database
@@ -37,6 +39,21 @@ def following():
 def saved():
     return render_template("layout.html")
 
+
+''' --- Posts Helpers --- '''
+
+def get_posts(post_ids):
+    """Get posts from the database"""
+    posts = db.execute("SELECT * FROM posts WHERE id IN (?)", post_ids)
+    return posts
+
+
+@main_bp.route("/post")
+def post():
+    """Show post"""
+    id = request.args.get("id")
+    post = get_posts([id])
+    return render_template("post.html", post=post[0])
 
 ''' --- Pages from account menu --- '''
 

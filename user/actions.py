@@ -7,56 +7,12 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from user.helpers import apology, login_required, resize_and_compress
-from user.validate import validate_name, validate_username, validate_image, validate_post
+from user.validate import validate_name, validate_username, validate_image
 
 action_bp = Blueprint('updates', __name__)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///wg.db")
-
-
-@action_bp.route("/create_post", methods=["POST"])
-@login_required
-def create_post():
-    """Create Post"""
-    # Get form data
-    file = request.files['post-image']
-    title = request.form.get("post-title")
-    category = request.form.get("post-category")
-    content = request.form.get("post-content")
-
-    # Validate form data
-    if len(json.loads(validate_post())) > 0:
-        flash("Could not create post, please check the errors", "danger")
-        return redirect(request.referrer)
-
-    # Insert the post first to get its ID
-    db.execute("INSERT INTO posts (user_id, image, title, category, content) VALUES (?, ?, ?, ?, ?)", session["user_id"], "", title, category, content)
-
-    # Get the ID of the last inserted post
-    last_id = db.execute("SELECT last_insert_rowid()")[0]['last_insert_rowid()']
-    post_id = last_id
-
-    # Save the file with the ID as its name
-    filename = secure_filename(str(post_id) + os.path.splitext(file.filename)[1])
-    file_path = os.path.join(current_app.config['UPLOAD_POST_FOLDER'], filename)
-    file.save(file_path)
-
-    # Resize and compress the image
-    output_path = os.path.join(current_app.config['UPLOAD_POST_FOLDER'], filename)
-    resize_and_compress(file_path, output_path, max_kb=100)  # Example: compress to max 100 KB
-
-    # If user had images with other extensions then delete them
-    for junk_filename in [str(post_id) + ext for ext in [".png", ".jpg", ".jpeg"]]:
-        junk_file = os.path.join(current_app.config['UPLOAD_POST_FOLDER'], junk_filename)
-        if os.path.exists(junk_file) and junk_filename != filename:
-            os.remove(junk_file)
-
-    # Update the post with the correct image path
-    db.execute("UPDATE posts SET image = ? WHERE id = ?", "/" + output_path, post_id)
-
-    flash("Posted successfully", "success")
-    return redirect(request.referrer)
 
 
 ''' ---- Profile page actions ---- '''
