@@ -35,7 +35,36 @@
                     <p class="card-text">{{ post.content }}</p>
                 </div>
                 <div class="card-footer">
-                    <h5>Test</h5>
+                    <div class="d-flex flex-row align-items-center justify-content-between">
+                        <!--Voting buttons-->
+                        <div class="btn-group btn-group-sm border rounded-pill">
+                            <button type="button" class="btn">
+                                <i class="bi bi-caret-up"></i>
+                            </button>
+                            <div class="px-3 border-start border-end d-flex flex-column align-items-center justify-content-center">
+                                0
+                            </div>
+                            <button type="button" class="btn">
+                                <i class="bi bi-caret-down"></i>
+                            </button>
+                        </div>
+                        <!--Comment button-->
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#commentModal">
+                            <i class="bi bi-chat-left-text"></i>
+                        </button>
+
+                        <!-- More options -->
+                        <div class="dropup-left dropup">
+                            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="#">Action</a></li>
+                              <li><a class="dropdown-item" href="#">Action two</a></li>
+                              <li><a class="dropdown-item" href="#">Action three</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
