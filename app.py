@@ -1,5 +1,5 @@
 from cs50 import SQL
-from datetime import timedelta
+from datetime import datetime, timedelta
 from flask import Flask, redirect, send_from_directory, session
 from flask_session import Session
 
@@ -35,6 +35,13 @@ def after_request(response):
 
 # Register the Blueprint
 app.register_blueprint(main_bp)
+
+# Jinja template filters
+@app.template_filter('post_datetime')
+def format_post_datetime(s):
+    """Format datetime as string."""
+    s = datetime.strptime(s, '%Y-%m-%d %H:%M:%S')
+    return s.strftime('%d %B %Y')
 
 
 @app.context_processor

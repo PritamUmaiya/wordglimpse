@@ -61,3 +61,26 @@ function follow_profile(button, id) {
         console.error('Error:', error);
     });
 }
+
+// Function to save post
+function save_post(button, id) {
+    fetch('/save_post', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ post_id: id})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data['message'] == 'saved') {
+            button.innerHTML = `<i class="bi bi-bookmark-fill text-primary"></i>`;
+        }
+        else if (data['message'] == 'unsaved') {
+            button.innerHTML = `<i class="bi bi-bookmark"></i>`;
+        }
+    })
+    .catch(error => {  // Corrected syntax here
+        console.error('Error:', error);
+    });
+}

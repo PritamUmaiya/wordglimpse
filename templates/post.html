@@ -5,5 +5,40 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ post.title }}</h1>
+    <section class="middle-content p-2">
+        <div class="middle-content-small">
+
+            <!--Display the post-->
+            <div class="card mb-5">
+                <img src="{{ post.image }}" class="post-img" alt="Post">
+                <div class="card-header">
+                    <a href="/profile?id={{ author.id }}" class="post-author-link">
+                        <img src="{% if author.avatar %}{{ author.avatar }}{% else %}/static/image/user.png{% endif %}" alt="Profile Photo" class="post-author-img">
+                        <div class="d-flex flex-column">
+                            <span>{{ author.fname }}</span>
+                            <small class="text-body-secondary">{{ post.created_at|post_datetime }}</small>
+                        </div>
+                    </a>
+                    {% if user %}
+                        <!-- Check if user is looged in and saved the post -->
+                        <button type="button" class="btn" onclick="save_post(this, '{{ post.id }}')">
+                            <i class="bi bi-bookmark{% if saved %}-fill text-primary{% endif %}"></i>
+                        </button>
+                    {% else %}
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
+                            <i class="bi bi-bookmark"></i>
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.content }}</p>
+                </div>
+                <div class="card-footer">
+                    <h5>Test</h5>
+                </div>
+            </div>
+
+        </div>
+    </section>
 {% endblock %}

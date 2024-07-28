@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Blueprint, current_app, request, flash, redirect, render_template, session
+from flask import Blueprint, current_app, request, flash, redirect, render_template, session, jsonify
 import json
 import os
 from werkzeug.utils import secure_filename
@@ -22,10 +22,6 @@ def get_post_by_id(post_id, detailed=False):
         """Post with full details"""
         post = db.execute("SELECT * FROM posts WHERE id = ?", post_id)[0]
 
-        # Check if post exists
-        if not post:
-            return apology("Post not found", 404)
-
         # Get the author details of the post
         author = db.execute("SELECT * FROM users WHERE id = ?", post["user_id"])[0]
 
@@ -33,9 +29,14 @@ def get_post_by_id(post_id, detailed=False):
         upvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, 1)[0]['total']
         downvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, -1)[0]['total']
 
-        # If user has logged in check if he has voted on the post
+
+        # If user has logged in check if he has saved the post and voted on the post
+        saved = False
         voted = False
         if session.get("user_id"):
+            saves = db.execute("SELECT * FROM saved_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
+            if len(saves) > 0:
+                saved = True
             votes = db.execute("SELECT vote FROM voted_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
             if len(votes) > 0:
                 voted = votes['vote'] # Get the vote 1 for upvote -1 for downvote
@@ -43,7 +44,7 @@ def get_post_by_id(post_id, detailed=False):
         # Get the comments of the post
         comments = db.execute("SELECT commented_posts.*, users.fname, users.avatar FROM commented_posts JOIN users ON commented_posts.user_id = users.id WHERE commented_posts.post_id = ?", post_id)
         
-        return [post, author, upvotes, downvotes, voted, comments]
+        return [post, author, upvotes, downvotes, saved, voted, comments]
 
     else:
         """Post with basic details"""
@@ -55,36 +56,29 @@ def get_post_by_id(post_id, detailed=False):
         return [post, author]
 
 
-def get_posts_by_user_id(user_id, detailed=False, order_by='DESC', limit=10, offset=0):
+# TODO: Add a function to get posts by user ID
+def get_posts_by_user_id(user_id, detailed=False, sord_by='relevence', order_by='DESC', limit=10, offset=0):
     """Get posts by user ID"""
-    rows = db.execute("SELECT id FROM posts WHERE user_id = ? ORDER BY id ? LIMIT ? OFFSET ?", user_id, order_by, limit, offset)
-
-    post_ids = [id for id in rows]
-
-    posts = [get_post_by_id(id, detailed) for id in post_ids]
-
-    return posts
+    ...
 
 
-def get_post_by_category(category, detailed=False, order_by='DESC', limit=10, offset=0):
+# TODO: Add a function to get posts by category
+def get_post_by_category(category, detailed=False, sord_by='relevence', order_by='DESC', limit=10, offset=0):
     """Get posts by category"""
-    rows = db.execute("SELECT id FROM posts WHERE category = ? ORDER BY id ? LIMIT ? OFFSET ?", category, order_by, limit, offset)
-
-    post_ids = [id for id in rows]
-
-    posts = [get_post_by_id(id, detailed) for id in post_ids]
-
-    return posts
-
+    ...
 
 
 ''''--- Post Routes ---'''
 @post_bp.route("/post/<int:post_id>")
 def post(post_id):
     """Post Page"""
-    post, author, upvotes, downvotes, voted, comments  = get_post_by_id(post_id, detailed=True)
+    # Check if the post exists
+    if not db.execute("SELECT * FROM posts WHERE id = ?", post_id):
+        return apology("Post not found", 404)
 
-    return render_template("post.html", post=post, author=author, upvotes=upvotes, downvotes=downvotes, voted=voted, comments=comments)
+    post, author, upvotes, downvotes, saved, voted, comments  = get_post_by_id(post_id, detailed=True)
+
+    return render_template("post.html", post=post, author=author, upvotes=upvotes, downvotes=downvotes, saved=saved, voted=voted, comments=comments)
 
 
 ''' --- Post Actions --- '''
@@ -131,4 +125,29 @@ def create_post():
 
     flash("Posted successfully", "success")
     return redirect(request.referrer)
+
+
+@post_bp.route("/save_post", methods=["POST"])
+@login_required
+def save_post():
+    data = request.get_json()
+    post_id = data.get('post_id')
+    
+    # Check if post exists
+    posts = db.execute("SELECT id FROM posts WHERE id = ?", post_id)
+    if len(posts) == 0:
+        return jsonify({'message': 'Post not found!'})
+
+    # Check if user already saved the post
+    saved_posts = db.execute("SELECT id FROM saved_posts WHERE user_id = ? AND post_id = ?", session["user_id"], post_id)
+
+    if len(saved_posts) > 0:
+        db.execute("DELETE FROM saved_posts WHERE user_id = ? AND post_id = ?", session["user_id"], post_id)
+        return jsonify({'message': 'unsaved'})
+
+    # Save the post
+    db.execute("INSERT INTO saved_posts (user_id, post_id) VALUES (?, ?)", session["user_id"], post_id)
+
+    # Return a response
+    return jsonify({'message': 'saved'})
 
