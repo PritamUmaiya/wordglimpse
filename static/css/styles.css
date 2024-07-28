@@ -20,6 +20,16 @@
     border-color: #86b7fe;
     box-shadow: none;
 }
+.accordion-button::after, .accordion-collapse {
+    transition: all 0.1s;
+}
+.accordion-button:not(.collapsed) {
+    color: var(--bs-body-color);
+    background-color: transparent;
+}
+.accordion-button:focus {
+    box-shadow: none;
+}
 .alert {
     border-radius: 0;
     z-index: 10000;
@@ -50,11 +60,20 @@ header {
     border-top: 1px solid var(--bs-border-color-translucent);
     border-bottom: 1px solid var(--bs-border-color-translucent);
     position: fixed;
-    top: 50px;
+    top: 49px;
     bottom: 65px;
     left: 0;
     right: 0;
     overflow-y: auto;
+}
+.middle-content {
+    width: 100%;
+    max-width: 768px;
+}
+.middle-content-small {
+    width:100%;
+    max-width: 576px;
+    margin:auto;
 }
 
 /* --- OFFCONAVS START: LEFT MENU --- */
@@ -166,10 +185,8 @@ header {
 }
 #newPostCard {
     width: 100%;
-    max-width: 600px;
+    max-width: 576px;
     height: 100%;
-    display: block;
-    margin: auto;
     overflow-y: auto;
 }
 
@@ -194,7 +211,7 @@ header {
 /* === Small device: sm === */
 @media screen and (min-width:576px) {
     .main {
-        top: 57px;
+        top: 54px;
     }
     /* Adding shadow to search Container */
     #searchContainer {
@@ -217,7 +234,7 @@ header {
 @media screen and (min-width:768px) {
     /* Main */
     .main {
-        top: 57px;
+        top: 56px;
         bottom:1px;
         left: calc(25% + 1px);
         border-left: 1px solid var(--bs-border-color-translucent);
@@ -225,7 +242,7 @@ header {
     }
    /* Bottom Nav Becomes Sidenav */
    .sidenav-md-left {
-        top: 57px;
+        top: 56px;
         width: 25%;
         padding: 10px;
         border-right: 1px solid var(--bs-border-color-translucent);

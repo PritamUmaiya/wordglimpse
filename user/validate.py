@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, session
 import json
 import re
 from werkzeug.security import check_password_hash
@@ -10,6 +10,29 @@ validate_bp = Blueprint('validate', __name__)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///wg.db")
+
+
+@validate_bp.route("/validate_image", methods=["POST"])
+@login_required
+def validate_image():
+    """Validate image"""
+    errors = []
+
+    if 'image' not in request.files:
+        errors.append({"image": "Please select an image!"})
+
+    file = request.files['image']
+    if file.filename == '':
+        errors.append({"image": "Please select an image!"})
+
+    elif not allowed_file(file.filename):
+        errors.append({"image": "Please select images only!"})
+    
+    # Make sure file size does not exceed 16MB
+    if file and file.content_length > current_app.config['MAX_CONTENT_LENGTH']:
+        errors.append({"image": "Please select an image less than 16MB!"})
+
+    return json.dumps(errors)
 
 
 @validate_bp.route("/validate_post", methods=["POST"])
@@ -24,19 +47,7 @@ def validate_post():
     # Validate form data
     errors = []
 
-    if 'post-image' not in request.files:
-        errors.append({"image": "Please select an image!"})
-
-    file = request.files['post-image']
-    if file.filename == '':
-        errors.append({"image": "Please select an image!"})
-
-    elif not allowed_file(file.filename):
-        errors.append({"image": "Please select images only!"})
-    
-    # Make sure file size does not exceed 16MB
-    if file and file.content_length > current_app.config['MAX_CONTENT_LENGTH']:
-        errors.append({"image": "Please select an image less than 16MB!"})
+    errors.append(json.loads(validate_image()))
 
     if not title:
         errors.append({"title": "Please enter a title!"})
@@ -97,6 +108,52 @@ def validate_name():
 
     # Return as JSON object
     return json.dumps(errors)
+
+
+@validate_bp.route("/validate_username", methods=["GET", "POST"])  
+@login_required
+def validate_username():
+    """Handle for both post and get"""
+    if request.method == "POST":
+        username = request.form.get("username")
+        has_username = request.form.get("has_username")
+
+    else:
+        username = request.args.get("username")
+        has_username = request.args.get("has_username")
+
+    # If user had username but send empty then it should be deleted
+    if (request.method == "GET") and has_username and (not username or username == ""):
+        return json.dumps(['<small class="text-info">Delete username!</small>'])
+
+    if not has_username and (not username or username == ""):
+        return json.dumps(['<small class="text-danger">Please choose username!</small>'])
+    
+    # Make sure that username starts with alphabets only, can contain numbers, [- _] and case insensitive
+    if not re.match("^[a-z][a-z0-9]*([.][a-z0-9]+)*$", username.lower()):
+        return json.dumps(['<small class="text-danger">Invalid username!</small>'])
+
+    elif len(username) < 2 :
+        return json.dumps(['<small class="text-danger">Min 2 characters are required!</small>'])
+    
+    elif len(username) > 20:
+        return json.dumps(['<small class="text-danger">Max 20 characters are allowed!</small>'])
+
+    # Normalize the input username
+    normalized_username = username.replace('.', '').lower()
+
+    # Query the database for normalized usernames
+    usernames = db.execute("""
+        SELECT username 
+        FROM users 
+        WHERE REPLACE(username, '.', '') = ? AND id != ?
+    """, normalized_username, session["user_id"])
+
+    if len(usernames) != 0:
+        return json.dumps(['<small class="text-danger">Username not available!</small>'])
+
+    # Return empty list if success
+    return json.dumps([])
 
 
 @validate_bp.route("/validate_signup", methods=["POST"])

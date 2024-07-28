@@ -266,7 +266,7 @@
                         <label for="postImage" class="form-control" id="postImagePreview">
                             <span class="d-inline-block" style="padding:7px 14px;">Select Image</span>
                         </label>
-                        <input name="post-image" class="input-file" type="file" id="postImage" accept="image/*">
+                        <input name="image" class="input-file" type="file" id="postImage" accept="image/*">
                         <small class="text-danger d-none" id="imageError"></small>
                     </div>
                     <div class="mb-3">
@@ -296,6 +296,30 @@
                 </form>
             </div>
         </section>
+        <!-- Delete Account Modal -->
+        <div class="modal" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <small><strong class="text-info">Important!</strong><br><br> Deleting account is permanent and can
+                                not be undone. All of your posts and related data will be deleted immedietly!</small>
+                        </p>
+                        <form action="delete_account" method="post">
+                            <div class="mb-2">
+                                <input type="password" name="password" placeholder="Enter your password" class="form-control">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-danger">Delete account</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% else %}
         <!-- LOGIN Required Modal -->
         <div class="modal" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">

@@ -4,15 +4,16 @@ from flask import Blueprint, flash, redirect, render_template, request, session
 import json
 from werkzeug.security import generate_password_hash
 
+from user.actions import action_bp
 from user.helpers import apology, login_required
 from user.validate import validate_bp, validate_signup, validate_login
 
 # Create a Blueprint
-main_bp = Blueprint('route', __name__)
+main_bp = Blueprint('main', __name__)
 
 # Register the Blueprints with the main Blueprint
 main_bp.register_blueprint(validate_bp)
-
+main_bp.register_blueprint(action_bp)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///wg.db")
@@ -35,6 +36,20 @@ def following():
 @login_required
 def saved():
     return render_template("layout.html")
+
+
+''' --- Pages from account menu --- '''
+
+@main_bp.route("/profile/edit")
+@login_required
+def edit_profile():
+    return render_template("edit_profile.html")
+
+
+@main_bp.route("/account")
+@login_required
+def account():
+    return render_template("account.html")
 
 
 """ --- User Authentication routes --- """

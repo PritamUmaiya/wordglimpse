@@ -38,7 +38,7 @@ app.register_blueprint(main_bp)
 
 
 @app.context_processor
-def inject_categories():
+def inject_user():
     """Inject categories into the template context"""
     if session.get("user_id") is None:
             return dict(categories=CATEGORIES)

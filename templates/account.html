@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+
+{% block script %}
+    <script src="/static/js/account.js"></script>
+{% endblock %}
+
+{% block title %}
+    Account
+{% endblock %}
+
+{% block content %}
+    <section class="middle-content p-2">
+        <div class="middle-content-small">
+            <h5 class="mb-5 mt-3 text-primary">Account settings</h5>
+
+            <!-- Edit personal details section -->
+            <h6 class="mb-2">Personal details</h6>
+            <div class="accordion mb-5" id="pdAccordion">
+                <!-- Name collapse-->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nameCollapse" aria-expanded="false" aria-controls="nameCollapse">Name</button>
+                    </h2>
+                    <div id="nameCollapse" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">
+                        <div class="accordion-body">
+                            <form action="/update_name" method="post" id="nameForm">
+                                <!--Validate Name-->
+                                <div class="mb-3 d-flex flex-row justify-content-between" style="gap:10px;">
+                                    <div class="input-group has-validation">
+                                        <div class="form-floating is-invalid">
+                                            <input value="{{ user['fname'] }}" type="text" name="fname" class="form-control" id="fname" placeholder="First Name" autocomplete="off" maxlength="20" autofocus>
+                                            <label for="fname">First Name</label>
+                                        </div>
+                                        <div class="invalid-feedback" id="fnameError"></div>
+                                    </div>
+                                    <div class="input-group has-validation">
+                                        <div class="form-floating is-invalid">
+                                            <input value="{% if user['lname'] %}{{ user['lname'] }}{% endif %}" type="text" name="lname" class="form-control" id="lname" placeholder="Last Name" autocomplete="off" maxlength="20">
+                                            <label for="lname">Last Name</label>
+                                        </div>
+                                        <div class="invalid-feedback" id="lnameError"></div>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--Username collapse -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#usernameCollapse" aria-expanded="false" aria-controls="usernameCollapse">Username</button>
+                    </h2>
+                    <div id="usernameCollapse" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">
+                        <div class="accordion-body">
+                            
+                            <form action="/update_username" method="post" id="usernameForm">
+                                {% if user['username'] %}
+                                    <input type="hidden" name="has_username" id="has_username" value="{{ user['username'] }}">
+                                {% endif %}
+                                
+                                <p style="overflow: auto;"><small>wordglimpse.com/@<span id="usernamePreview">{% if user['username'] %}{{ user['username'] }}{% endif %}</span></small></p>
+                                <!--Validate Username-->
+                                <div class="input-group">
+                                    <span class="input-group-text">@</span>
+                                    <div class="form-floating">
+                                        <input value="{% if user['username'] %}{{ user['username'] }}{% endif %}" type="text" name="username" class="form-control" id="username" placeholder="Username" autocomplete="off" maxlength="20" style="text-transform: lowercase;">
+                                        <label for="username">Username</label>
+                                    </div>
+                                </div>
+                                <p id="usernameMessage"></p>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- Email collapse -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#emailCollapse" aria-expanded="false" aria-controls="emailCollapse">Email</button>
+                    </h2>
+                    <div id="emailCollapse" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">
+                        <div class="accordion-body">
+                            <form action="/update_email" method="post" class="d-flex flex-row align-items-center" style="gap: 10px;">
+                                <input type="email" value="{{ user['email'] }}" class="form-control" name="email" placeholder="Change your email" autocomplete="off">
+                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Change Password Section -->
+            <h6 class="mb-2">Change password</h6>
+            <div class="mb-5">
+                <form action="/update_password" method="post">
+                    <div class="mb-2">
+                        <input type="password" name="password" placeholder="Enter your password" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <input type="password" name="new-password" placeholder="New password" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <input type="password" name="confirm-password" placeholder="Confirm password" class="form-control">
+                    </div>
+                    <div class="mb-2 text-center">
+                        <button type="submit" class="btn btn-primary">Change password</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Delete user account -->
+            <div class="mb-5">
+                <h6 class="mb-2">Delete account</h6>
+                <p><small>Close your account and delete all related information.</small></p>
+                <div class="text-center">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete account</button>
+                </div>
+            </div>
+            </div>
+    </section>
+{% endblock %}
