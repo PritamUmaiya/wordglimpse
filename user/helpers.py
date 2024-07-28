@@ -10,7 +10,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 CATEGORIES = ['education', 'entertainment', 'news', 'stories', 'wellness', 'technology', 'finance', 'lifestyle', 'environment', 'sports']
 
 
-
 def apology(message, code=400):
     """Render message as an apology to user."""
     return render_template("apology.html", code=code, message=message), code

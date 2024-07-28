@@ -47,7 +47,8 @@ def inject_user():
 
     if len(users) == 0:
         """If user is not found, logout"""
-        return redirect("/logout")
+        session.clear()
+        return redirect("/")
 
     return dict(categories=CATEGORIES, user=users[0])
 
