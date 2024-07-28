@@ -190,6 +190,48 @@ header {
     overflow-y: auto;
 }
 
+/* === Profile Page === */
+.fake-cover-img {
+    height: 125px;
+    width: 100%;
+    background-color: var(--bs-secondary-bg);
+}
+.cover-img {
+    height: 125px;
+    width: 100%;
+    object-fit: cover;
+}
+.avatar-img {
+    width: 110px;
+    height: 110px;
+    border: 6px solid var(--bs-body-bg);
+    border-radius: 50%;
+    object-fit:cover;
+    margin-top: -50px;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--bs-body-bg);
+}
+
+.profile-btn-top, .profile-btn-top:hover {
+    width: 45%;
+    max-width: 300px;
+    border:2px solid var(--bs-primary);
+}
+.profile-about-list li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    word-wrap: break-word; 
+    word-break: break-all; 
+    white-space: normal;
+    overflow: hidden;
+    padding:2px 0;
+}
+
 /* === Extra small devices === */
 @media screen and (max-width:575px) {
     /* Search Container full page */
@@ -228,6 +270,10 @@ header {
     #searchInput {
         border:none;
     }
+    /* Profile Page */
+    .fake-cover-img, .cover-img {
+        height: 145px;
+    }
 }
 
 /* === Medium devies: md === */
@@ -264,5 +310,8 @@ header {
     }
     .bottom-nav .active, .bottom-nav .btn:hover {
         background-color: var(--bs-tertiary-bg);
+    }
+    .fake-cover-img, .cover-img {
+        height: 155px;
     }
 }

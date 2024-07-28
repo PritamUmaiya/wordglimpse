@@ -40,6 +40,73 @@ def saved():
 
 ''' --- Pages from account menu --- '''
 
+"""User profile page"""
+@main_bp.route('/@<username>')
+def username_profile(username):
+    # Check if username exists
+    profiles = db.execute("SELECT * FROM users WHERE username = ?", username)
+
+    if len(profiles) == 0:
+        return apology("The user your are looking for was not found!", 404)
+
+    profile_id = profiles[0]["id"]
+
+    # Total number of followers
+    followers = db.execute("SELECT COUNT(id) AS total FROM followings WHERE profile_id = ?", profile_id)
+
+    # Total nubmer of posts
+    posts = db.execute("SELECT COUNT (id) AS total FROM posts WHERE user_id = ?", profile_id)
+
+    # User is logged in and follows this profile
+    following = False
+
+    if session.get("user_id") is not None:
+        rows = db.execute("SELECT id FROM followings WHERE user_id = ? AND profile_id = ?", session["user_id"], profile_id)
+        if len(rows) > 0:
+            following = True
+    
+    return render_template("profile.html", profile=profiles[0], total_followers=followers[0]["total"], following=following, total_posts=posts[0]["total"])
+
+
+@main_bp.route("/profile")
+def profile():
+    profile_id = request.args.get("id")
+
+    if not profile_id or profile_id == "":
+        # If user has logged in then show him their profile
+        if session.get("user_id") is not None:
+            return redirect("/profile?id=" + str(session["user_id"]))
+        else:
+            return redirect("/login")
+    
+    # Check if user_id exists
+    profiles = db.execute("SELECT * FROM users WHERE id = ?",  profile_id)
+
+    if len(profiles) == 0:
+        return apology("The user your are looking for was not found!", 404)
+
+    # If profile has an username redirect to their username
+    if profiles[0]["username"] != None:
+        username_link = "/@" + profiles[0]["username"]
+        return redirect(username_link)
+
+    # Total number of followers
+    followers = db.execute("SELECT COUNT(id) AS total FROM followings WHERE profile_id = ?", profile_id)
+
+    # Total nubmer of posts
+    posts = db.execute("SELECT COUNT (id) AS total FROM posts WHERE user_id = ?", profile_id)
+
+    # User is logged in and follows this profile
+    following = False
+
+    if session.get("user_id") is not None:
+        rows = db.execute("SELECT id FROM followings WHERE user_id = ? AND profile_id = ?", session["user_id"], profile_id)
+        if len(rows) > 0:
+            following = True
+    
+    return render_template("profile.html", profile=profiles[0], total_followers=followers[0]["total"], following=following, total_posts=posts[0]["total"])
+
+
 @main_bp.route("/profile/edit")
 @login_required
 def edit_profile():

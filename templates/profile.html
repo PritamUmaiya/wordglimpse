@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ profile['fname'] }}
+{% endblock %}
+
+{% block content %}
+    <div class="middle-content">
+        <!-- Top Section -->
+        <section class="mb-5 d-block w-100">
+            <!-- Profile Cover Image container -->
+            {% if profile['cover'] %}
+                <img src="{{ profile['cover'] }}" alt="Cover Photo" class="cover-img">
+            {% else %}
+                <div class="fake-cover-img"></div>
+            {% endif %}
+            
+            <!-- Profile Avatar Image -->
+            <img src="{% if profile['avatar'] %}{{ profile['avatar'] }}{% else %}/static/image/user.png{% endif %}" alt="{% if profile['avatar'] %}{{ profile['fname'] }}{% else %}User{% endif %}" class="avatar-img">
+            <!-- Name -->
+            <p class="text-center pt-2">{{ profile['fname'] }} {% if profile['lname'] %}{{ profile['lname'] }}{% endif %}</p>
+            <!-- Bio -->
+            {% if profile['bio'] %}
+                <p class="text-center text-body-secondary p-2" style="margin-top: -10px;"><small>{{ profile['bio'] }}</small></p>
+            {% endif %}
+           
+            <!--Profile Top Buttons-->
+            <!--Log in required to do this action-->
+            <div class="mt-5 mb-2 d-flex flex-row align-items-center justify-content-around">
+                {% if user %}
+
+                    {% if profile['offer_messaging'] == 1 %}
+                        {% if profile['id'] == user['id'] %}
+                            <button type="button" class="btn text-primary profile-btn-top">Message</button>
+                        {% else %}
+                            <button type="button" class="btn text-primary profile-btn-top">Message</button>
+                        {% endif %}
+                    {% else %}
+                        <button type="button" class="btn text-primary profile-btn-top">Posts</button>
+                    {% endif %}
+
+                    <!-- If profile of same person disable follow -->
+                    {% if profile['id'] == user['id'] %}
+                        <button type="button" class="btn btn-primary profile-btn-top">Follow</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary profile-btn-top" title="{% if following %}Unfollow{% else %}Follow{% endif %}" onclick="follow_profile(this, '{{ profile.id }}')">{% if following %}Following{% else %}Follow{% endif %}</button>
+                    {% endif %}
+
+                {% else %}
+
+                    {% if profile['offer_messaging'] == 1 %}
+                        <button type="button" class="btn text-primary profile-btn-top" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">Message</button>
+                    {% else %}
+                        <button type="button" class="btn text-primary profile-btn-top">Posts</button>
+                    {% endif %}
+                    <button type="button" class="btn btn-primary profile-btn-top" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">Follow</button>
+                {% endif %}
+            </div>
+
+        </section>
+
+        <!-- Profile details Section -->
+        <section class="p-3 mb-3">
+            <h5 class="mb-3">Details</h5>
+            <ul class="list-unstyled profile-about-list">
+                <!--Profession-->
+                {% if profile['profession'] %}
+                    <li>
+                        <i class="bi bi-briefcase-fill"></i>
+                        <span>{{ profile['profession'] }}</span>
+                    </li>
+                {% endif %}
+                <!--Total Posts-->
+                <li>
+                    <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                    <span>{{ total_posts }} {% if total_posts == 0 or total_posts == 1 %}Post{% else %}Posts{% endif %}</span>
+                </li>
+                <!--Total Followers-->
+                <li>
+                    <i class="bi bi-rss-fill"></i>
+                    <span>{{ total_followers }} {% if total_followers == 0 or total_followers == 1 %}Follower{% else %}Followers{% endif %}</span>
+                </li>
+                <!--Facebook-->
+                {% if profile.facebook %}
+                    <li>
+                        <i class="bi bi-facebook"></i>
+                        <small><a href="https://facebook.com/{{ profile.facebook }}" class="text-body link-underline link-underline-opacity-0" title="Facebook" target="_blank">{{ profile.facebook }}</a></small>
+                    </li>
+                {% endif %}
+                <!-- Github -->
+                {% if profile.github %}
+                    <li>
+                        <i class="bi bi-github"></i>
+                        <small><a href="https://github.com/{{ profile.github }}" class="text-body link-underline link-underline-opacity-0" title="Github" target="_blank">{{ profile.github }}</a></small>
+                    </li>
+                {% endif %}
+                <!-- LinkedIn -->
+                {% if profile.linkedin %}
+                    <li>
+                        <i class="bi bi-linkedin"></i>
+                        <small><a href="https://linkedin.com/in/{{ profile.linkedin }}" class="text-body link-underline link-underline-opacity-0" title="Linkedin" target="_blank">{{ profile.linkedin }}</a></small>
+                    </li>
+                {% endif %}
+                <!-- Instagram -->
+                {% if profile.instagram %}
+                    <li>
+                        <i class="bi bi-instagram"></i>
+                        <small><a href="https://instagram.com/{{ profile.instagram }}" class="text-body link-underline link-underline-opacity-0" title="Instagram" target="_blank">{{ profile.instagram }}</a></small>
+                    </li>
+                {% endif %}
+                <!-- Twitter -->
+                {% if profile.twitter %}
+                    <li>
+                        <i class="bi bi-twitter-x"></i>
+                        <small><a href="https://twitter.com/{{ profile.twitter }}" title="Twitter" class="text-body link-underline link-underline-opacity-0" target="_blank">{{ profile.twitter }}</a></small>
+                    </li>
+                {% endif %}
+                <!-- Public email -->
+                {% if profile.public_email %}
+                    <li>
+                        <i class="bi bi-envelope-fill"></i>
+                        <small><a href="mailto:{{ profile.public_email }}" class="text-body link-underline link-underline-opacity-0" title="Email" target="_blank">{{ profile.public_email }}</a></small>
+                    </li>
+                {% endif %}
+                <!-- Website -->
+                {% if profile.website %}
+                    <li>
+                        <i class="bi bi-link-45deg"></i>
+                        <small><a href="{{ profile.website }}" class="link-offset-2" title="Website" target="_blank">{{ profile.website }}</a></small>
+                    </li>
+                {% endif %}
+                
+            </ul>
+        </section>
+
+        <!-- Recent Posts will apper here -->
+        <section class="p-2">
+            <div class="mb-5">
+                <p><span class="badge text-bg-primary">Recent</span></p>
+            </div>
+            <div class="mb-3">
+                <p>No posts yet!</p>
+            </div>
+        </section>
+    </div>
+{% endblock %}

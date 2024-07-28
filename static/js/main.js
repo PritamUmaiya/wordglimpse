@@ -38,3 +38,26 @@ function countLetter(textareaId, counterId) {
     var counterDisplay = document.getElementById(counterId);
     counterDisplay.textContent = letterCount;
 }
+
+// Follow or unfollow user profile
+function follow_profile(button, id) {
+    fetch('/follow_profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ profile_id: id})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data['message'] == 'followed') {
+            button.innerText = 'Following';
+        }
+        else if (data['message'] == 'unfollowed') {
+            button.innerText = 'Follow';
+        }
+    })
+    .catch(error => {  // Corrected syntax here
+        console.error('Error:', error);
+    });
+}

@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Blueprint, current_app, request, flash, redirect, session
+from flask import Blueprint, current_app, request, flash, redirect, session, jsonify
 import json
 import os
 import re
@@ -57,6 +57,30 @@ def create_post():
 
     flash("Posted successfully", "success")
     return redirect(request.referrer)
+
+
+''' ---- Profile page actions ---- '''
+
+@action_bp.route("/follow_profile", methods=["POST"])
+@login_required
+def follow():
+    data = request.get_json()
+    profile_id = data.get('profile_id')
+
+    if not profile_id:
+        return jsonify({'message': 'User not found!'})
+    
+    # If user already follows the profile then unfollow it
+    followings = db.execute("SELECT COUNT(id) AS count FROM followings WHERE user_id = ? AND profile_id = ?", session["user_id"], profile_id)
+    
+    if followings[0]['count'] > 0:
+        db.execute("DELETE FROM followings WHERE user_id = ? AND profile_id = ?", session["user_id"], profile_id)
+        return jsonify({'message': 'unfollowed'})
+        
+    else:
+        # Follow the profile
+        db.execute("INSERT INTO followings (user_id, profile_id) VALUES (?, ?)", session["user_id"], profile_id)
+        return jsonify({'message': 'followed'})
 
 
 ''' --- Account Actions --- '''
