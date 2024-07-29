@@ -135,3 +135,42 @@ function save_post(button, id) {
         console.error('Error:', error);
     });
 }
+
+// Function to vote post
+function vote_post(id, vote) {
+    let upvote_btn = document.getElementById('upvote_btn_' + id);
+    let downvote_btn = document.getElementById('downvote_btn_' + id);
+    let upvote_count = document.getElementById('upvote_count_' + id);
+    let upvotes = upvote_count.getAttribute('data-upvotes');
+    fetch('/vote_post', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ post_id: id, vote: vote})
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle buttons 
+        if (data['message'] == 'upvoted') {
+            upvote_btn.innerHTML = `<i class="bi bi-caret-up-fill text-primary"></i>`;
+            downvote_btn.innerHTML = `<i class="bi bi-caret-down"></i>`;
+        }
+        else if (data['message'] == 'downvoted') {
+            upvote_btn.innerHTML = `<i class="bi bi-caret-up"></i>`;
+            downvote_btn.innerHTML = `<i class="bi bi-caret-down text-danger"></i>`;
+        }
+        else if (data['message'] == 'unvoted') {
+            upvote_btn.innerHTML = `<i class="bi bi-caret-up"></i>`;
+            downvote_btn.innerHTML = `<i class="bi bi-caret-down"></i>`;
+        }
+
+        // Handle upvote count
+        upvote_count.innerText = convert_to_short_number(parseInt(upvotes) + parseInt(data['upvote']));
+        upvote_count.setAttribute('data-upvotes', parseInt(upvotes) + parseInt(data['upvote']));
+        
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}

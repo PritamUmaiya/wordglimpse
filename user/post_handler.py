@@ -1,3 +1,4 @@
+import re
 from cs50 import SQL
 from flask import Blueprint, current_app, request, flash, redirect, render_template, session, jsonify
 import json
@@ -39,7 +40,7 @@ def get_post_by_id(post_id, detailed=False):
                 saved = True
             votes = db.execute("SELECT vote FROM voted_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
             if len(votes) > 0:
-                voted = votes['vote'] # Get the vote 1 for upvote -1 for downvote
+                voted = votes[0]['vote'] # Get the vote 1 for upvote -1 for downvote
 
         # Get the comments of the post
         comments = db.execute("SELECT commented_posts.*, users.fname, users.avatar FROM commented_posts JOIN users ON commented_posts.user_id = users.id WHERE commented_posts.post_id = ?", post_id)
@@ -132,6 +133,9 @@ def create_post():
 def save_post():
     data = request.get_json()
     post_id = data.get('post_id')
+
+    if not post_id:
+        return jsonify({'message': 'Post ID not found!'})
     
     # Check if post exists
     posts = db.execute("SELECT id FROM posts WHERE id = ?", post_id)
@@ -151,3 +155,56 @@ def save_post():
     # Return a response
     return jsonify({'message': 'saved'})
 
+
+@post_bp.route("/vote_post", methods=["POST"])
+@login_required
+def vote_post():
+    data = request.get_json()
+    post_id = data.get('post_id')
+
+    if not post_id:
+        return jsonify({'message': 'Post ID not found!'})
+
+    # Check if post exists
+    posts = db.execute("SELECT id FROM posts WHERE id = ?", post_id)
+    if len(posts) == 0:
+        return jsonify({'message': 'Post not found!'})
+    
+    # Check if user already voted on the post
+    voted_posts = db.execute("SELECT vote FROM voted_posts WHERE user_id = ? AND post_id = ?", session["user_id"], post_id)
+
+    if len(voted_posts) > 0:
+        # Get the vote
+        vote = voted_posts[0]['vote'] # 1 for upvote -1 for downvote
+
+        # if vote matches remove the post
+        if vote == data.get('vote'):
+            # Remove the vote
+            db.execute("DELETE FROM voted_posts WHERE user_id = ? AND post_id = ?", session["user_id"], post_id)
+
+            # Return a response
+            if vote == 1:
+                return jsonify({'message': 'unvoted', 'upvote': -1})
+            else:
+                return jsonify({'message': 'unvoted', 'upvote': 0})
+        
+        else:
+            # Update the vote
+            db.execute("UPDATE voted_posts SET vote = ? WHERE user_id = ? AND post_id = ?", data.get('vote'), session["user_id"], post_id)
+
+            # Return a response
+            if data.get('vote') == 1:
+                return jsonify({'message': 'upvoted', 'upvote': 1})
+            else:
+                return jsonify({'message': 'downvoted', 'upvote': -1})
+
+    # Add the vote
+    db.execute("INSERT INTO voted_posts (user_id, post_id, vote) VALUES (?, ?, ?)", session["user_id"], post_id, data.get('vote'))
+
+    # Return a response
+    if data.get('vote') == 1:
+        return jsonify({'message': 'upvoted', 'upvote': 1})
+    else:
+        return jsonify({'message': 'downvoted', 'upvote': 0})
+
+    

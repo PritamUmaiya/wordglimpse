@@ -31,6 +31,7 @@
                     {% endif %}
                 </div>
                 <div class="card-body">
+                    <p><small class="text-body-secondary">{{ post.category|title }}</small></p>
                     <h5 class="card-title">{{ post.title }}</h5>
                     <p class="card-text">{{ post.content }}</p>
                 </div>
@@ -38,15 +39,27 @@
                     <div class="d-flex flex-row align-items-center justify-content-between">
                         <!--Voting buttons-->
                         <div class="btn-group btn-group-sm border rounded-pill">
-                            <button type="button" class="btn" id="up_vote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}')">
-                                <i class="bi bi-caret-up{% if voted and voted == 1 %}-fill text-primary{% endif %}"></i>
-                            </button>
-                            <div class="px-3 border-start border-end d-flex flex-column align-items-center justify-content-center">
-                                <span id="total_vote_{{ post.id }}">{{ upvotes|short_number }}</span>
-                            </div>
-                            <button type="button" class="btn" id="down_vote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}')">
-                                <i class="bi bi-caret-down{% if voted and voted == -1 %} text-danger{% endif %}"></i>
-                            </button>
+                            {% if user %}
+                                <button type="button" class="btn" id="upvote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}', 1)">
+                                    <i class="bi bi-caret-up{% if voted == 1 %}-fill text-primary{% endif %}"></i>
+                                </button>
+                                <div class="px-3 border-start border-end d-flex flex-column align-items-center justify-content-center">
+                                    <span id="upvote_count_{{ post.id }}" data-upvotes="{{ upvotes }}">{{ upvotes|short_number }}</span>
+                                </div>
+                                <button type="button" class="btn" id="downvote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}', -1)">
+                                    <i class="bi bi-caret-down{% if voted and voted == -1 %} text-danger{% endif %}"></i>
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
+                                    <i class="bi bi-caret-up"></i>
+                                </button>
+                                <div class="px-3 border-start border-end d-flex flex-column align-items-center justify-content-center">
+                                    <span>{{ upvotes|short_number }}</span>
+                                </div>
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
+                                    <i class="bi bi-caret-down"></i>
+                                </button>
+                            {% endif %}
                         </div>
                         <!--Comment button-->
                         <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#commentModal">
