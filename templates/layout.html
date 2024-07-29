@@ -296,6 +296,23 @@
                 </form>
             </div>
         </section>
+        <!-- COMMENT Modal -->
+        <div class="modal" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="commentModalLabel">Comments</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        ...
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Delete Account Modal -->
         <div class="modal" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -305,8 +322,11 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            <small><strong class="text-info">Important!</strong><br><br> Deleting account is permanent and can
-                                not be undone. All of your posts and related data will be deleted immedietly!</small>
+                            <small>
+                                <strong class="text-info">Important!</strong><br><br> 
+                                Deleting account is permanent and can
+                                not be undone. All of your posts and related data will be deleted immedietly!
+                            </small>
                         </p>
                         <form action="delete_account" method="post">
                             <div class="mb-2">
