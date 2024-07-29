@@ -61,10 +61,6 @@ def short_number_format(value):
 
     return formatted_value
 
-@app.route("/short_number/<int:value>")
-def short_number(value):
-    return short_number_format(value)
-
 
 @app.context_processor
 def inject_user():

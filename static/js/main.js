@@ -81,7 +81,8 @@ function follow_profile(button, id) {
     .then(data => {
         if (data['message'] == 'followed') {
             button.innerText = 'Following';
-            if (total_followers && followers_count < 1000) {
+            button.setAttribute('title', 'Unfollow');
+            if (total_followers) {
                 total_followers.innerText = convert_to_short_number(followers_count + 1);
                 total_followers.setAttribute('data-total-followers', followers_count + 1);
                 if (followers_count + 1 > 1) {
@@ -94,7 +95,8 @@ function follow_profile(button, id) {
         }
         else if (data['message'] == 'unfollowed') {
             button.innerText = 'Follow';
-            if (total_followers && followers_count > 0) {
+            button.setAttribute('title', 'Follow');
+            if (total_followers) {
                 total_followers.innerText = convert_to_short_number(followers_count - 1);
                 total_followers.setAttribute('data-total-followers', followers_count - 1);
                 if (followers_count - 1 > 1) {

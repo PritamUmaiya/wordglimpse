@@ -40,21 +40,6 @@ def saved():
     return render_template("layout.html")
 
 
-''' --- Posts Helpers --- '''
-
-def get_posts(post_ids):
-    """Get posts from the database"""
-    posts = db.execute("SELECT * FROM posts WHERE id IN (?)", post_ids)
-    return posts
-
-
-@main_bp.route("/post")
-def post():
-    """Show post"""
-    id = request.args.get("id")
-    post = get_posts([id])
-    return render_template("post.html", post=post[0])
-
 ''' --- Pages from account menu --- '''
 
 """User profile page"""
@@ -93,14 +78,13 @@ def username_profile(username):
     return send_profile_data(profile_id)
 
 
-@main_bp.route("/profile")
-def id_profile():
-    profile_id = request.args.get("id")
-
+@main_bp.route("/profile/<int:profile_id>")
+def id_profile(profile_id):
+    # Check if user_id is provided
     if not profile_id or profile_id == "":
         # If user has logged in then show him their profile
         if session.get("user_id") is not None:
-            return redirect("/profile?id=" + str(session["user_id"]))
+            return redirect("/profile/" + str(session["user_id"]))
         else:
             return redirect("/login")
     
@@ -117,6 +101,16 @@ def id_profile():
 
     # Send profile data to the template
     return send_profile_data(profile_id)
+
+
+@main_bp.route("/profile")
+def profile():
+    # Check if user_id is provided
+    if not session.get("user_id") or session.get("user_id") == "":
+        # If user has logged in then show him their profile
+        return redirect("/login")
+    else:
+        return redirect("/profile/" + str(session["user_id"]))
 
 
 @main_bp.route("/profile/edit")

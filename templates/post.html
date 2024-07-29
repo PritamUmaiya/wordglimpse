@@ -10,10 +10,9 @@
 
             <!--Display the post-->
             <div class="card mb-5">
-
                 <img src="{{ post.image }}" class="post-img" alt="Post">
                 <div class="card-header">
-                    <a href="/profile?id={{ author.id }}" class="post-author-link">
+                    <a href="/profile/{{ author.id }}" class="post-author-link">
                         <img src="{% if author.avatar %}{{ author.avatar }}{% else %}/static/image/user.png{% endif %}" alt="Profile Photo" class="post-author-img">
                         <div class="d-flex flex-column">
                             <span>{{ author.fname }}</span>

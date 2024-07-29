@@ -73,7 +73,7 @@ def get_post_by_category(category, detailed=False, sord_by='relevence', order_by
 def post(post_id):
     """Post Page"""
     # Check if the post exists
-    if not db.execute("SELECT * FROM posts WHERE id = ?", post_id):
+    if not db.execute("SELECT id FROM posts WHERE id = ?", post_id):
         return apology("Post not found", 404)
 
     post, author, upvotes, downvotes, saved, voted, comments  = get_post_by_id(post_id, detailed=True)
