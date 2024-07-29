@@ -30,7 +30,6 @@ def get_post_by_id(post_id, detailed=False):
         upvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, 1)[0]['total']
         downvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, -1)[0]['total']
 
-
         # If user has logged in check if he has saved the post and voted on the post
         saved = False
         voted = False
@@ -41,11 +40,8 @@ def get_post_by_id(post_id, detailed=False):
             votes = db.execute("SELECT vote FROM voted_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
             if len(votes) > 0:
                 voted = votes[0]['vote'] # Get the vote 1 for upvote -1 for downvote
-
-        # Get the comments of the post
-        comments = db.execute("SELECT commented_posts.*, users.fname, users.avatar FROM commented_posts JOIN users ON commented_posts.user_id = users.id WHERE commented_posts.post_id = ?", post_id)
         
-        return [post, author, upvotes, downvotes, saved, voted, comments]
+        return [post, author, upvotes, downvotes, saved, voted]
 
     else:
         """Post with basic details"""
@@ -77,9 +73,9 @@ def post(post_id):
     if not db.execute("SELECT id FROM posts WHERE id = ?", post_id):
         return apology("Post not found", 404)
 
-    post, author, upvotes, downvotes, saved, voted, comments  = get_post_by_id(post_id, detailed=True)
+    post, author, upvotes, downvotes, saved, voted = get_post_by_id(post_id, detailed=True)
 
-    return render_template("post.html", post=post, author=author, upvotes=upvotes, downvotes=downvotes, saved=saved, voted=voted, comments=comments)
+    return render_template("post.html", post=post, author=author, upvotes=upvotes, downvotes=downvotes, saved=saved, voted=voted)
 
 
 ''' --- Post Actions --- '''
@@ -208,3 +204,79 @@ def vote_post():
         return jsonify({'message': 'downvoted', 'upvote': 0})
 
     
+@post_bp.route("/comment", methods=["POST"])
+@login_required
+def comment():
+    data = request.get_json()
+    post_id = data.get('post_id')
+    comment = data.get('comment')
+
+    if not post_id or not comment:
+        return jsonify({'message': 'Post ID or comment not found!'})
+
+    # Check if post exists
+    posts = db.execute("SELECT id FROM posts WHERE id = ?", post_id)
+    if len(posts) == 0:
+        return jsonify({'message': 'Post not found!'})
+
+    # Length of comment can not be less than 1 character and more than 200 char
+    if not comment or len(comment) < 1:
+        return jsonify({'message': 'Comment can not be less than 1 character!'})
+
+    elif len(comment) > 200:
+        return jsonify({'message': 'Comment can not be more than 200 characters!'})
+
+    # Add the comment
+    db.execute("INSERT INTO commented_posts (user_id, post_id, comment) VALUES (?, ?, ?)", session["user_id"], post_id, comment)
+
+    # Return a response
+    return jsonify({'message': 'commented'})
+
+
+@post_bp.route("/get_comments", methods=["POST"])
+@login_required
+def get_comments():
+    data = request.get_json()
+    post_id = data.get('post_id')
+    offset = data.get('offset', 0)
+    limit = data.get('limit', 10)
+
+    if not post_id:
+        return jsonify({'message': 'Post ID not found!'})
+
+    # Check if post exists
+    posts = db.execute("SELECT id FROM posts WHERE id = ?", post_id)
+
+    if len(posts) == 0:
+        return jsonify({'message': 'Post not found!'})
+
+    # Get comments
+    comments = db.execute("SELECT commented_posts.*, commented_posts.id AS comment_id, users.id, users.fname FROM commented_posts JOIN users ON commented_posts.user_id = users.id WHERE commented_posts.post_id = ? ORDER BY commented_posts.id DESC LIMIT ? OFFSET ?", post_id, limit, offset)
+
+    # Return a response
+    return jsonify({'message': 'comments', 'comments': comments})
+
+
+@post_bp.route("/delete_comment", methods=["POST"]) 
+@login_required
+def delete_comment():
+    data = request.get_json()
+    comment_id = data.get('comment_id')
+    
+    if not comment_id:
+        return jsonify({'message': 'Comment not found!'})
+
+    # chekc if comment exists
+    comments = db.execute("SELECT user_id FROM commented_posts WHERE id = ?", comment_id)
+
+    if len(comments) == 0:
+        return jsonify({'message': 'Comment not found!'})
+
+    # Check if user is the owner of comment
+    if session.get('user_id') != comments[0]['user_id']:
+        return jsonify({'message': 'You can not delete this comment!'})
+
+    # Delete the comment
+    db.execute("DELETE FROM commented_posts WHERE id = ?", comment_id)
+
+    return jsonify({'message': 'deleted'})

@@ -35,7 +35,7 @@
                     <h5 class="card-title">{{ post.title }}</h5>
                     <p class="card-text">{{ post.content }}</p>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer bg-body">
                     <div class="d-flex flex-row align-items-center justify-content-between">
                         {% if user %}
                             <!--Voting buttons-->
@@ -52,7 +52,7 @@
                                 </button>           
                             </div>
                             <!--Comment button-->
-                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#commentModal">
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#commentModal" onclick="openComments('{{ post.id }}', '{{ user.id }}')">
                                 <i class="bi bi-chat-left-text"></i>
                             </button>
 

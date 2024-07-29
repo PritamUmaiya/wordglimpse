@@ -174,3 +174,120 @@ function vote_post(id, vote) {
         console.error('Error:', error);
     });
 }
+
+// Fill the comment modal with data
+function openComments(post_id, user_id) {
+    let commentFooter = document.getElementById('commentFooter');
+    
+    // Load the comments
+    get_comments(post_id, user_id);
+
+    commentFooter.innerHTML = `
+    <input type="text" class="form-control" placeholder="Write a comment..." id="comment_input_${post_id}" title="comment" autocomplete="off">
+    <button type="button" class="btn btn-primary" onclick="create_comment(${post_id}, '{{ user.id }}')">
+        <i class="bi bi-chevron-right"></i>
+    </button>
+    `;
+    
+}
+
+// Function to create comment
+function create_comment(post_id, user_id) {
+    let comment = document.getElementById(`comment_input_${post_id}`).value;
+    
+    fetch('/comment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ post_id: post_id, comment: comment})
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data['message'] == 'commented') {
+            // Load the comments
+            get_comments(post_id, user_id);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Function to format datetime
+function formatDateTime(datetimeStr) {
+    let date = new Date(datetimeStr);
+    let options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+// Function to get comments
+function get_comments(post_id, user_id, offset=0, limit=10) {
+    let commentBody = document.getElementById('commentBody');
+
+    fetch('/get_comments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ post_id: post_id, offset: offset, limit: limit})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data['message'] == 'comments') {
+            // Clear Previous Comments
+            commentBody.innerHTML = '';
+            // Add New Comments
+            let comments = data['comments'];
+            
+            for (let i = 0; i < comments.length; i++) {
+                let comment = comments[i];
+
+                let button = '';
+                if (parseInt(user_id) == parseInt(comment.user_id)) {
+                    button = `
+                    <button type="button" class="btn btn-small" onclick="delete_comment(${comment.comment_id}, ${post_id}, ${user_id})">
+                        <i class="bi bi-trash"></i>
+                    </button>`;
+                }
+                commentBody.innerHTML += `
+                    <div class="mb-2 px-2 rounded bg-body-tertiary">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="d-flex flex-column">
+                                <a href="/profile/${comment.user_id}">${comment.fname}</a>
+                                <small class="text-body-secondary">${formatDateTime(comment.created_at)}</small>
+                            </div>
+                            ${button}
+                        </div>
+                        <span>${comment.comment}</span>
+                    </div>
+                `;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+// Function to delete comment
+function delete_comment(comment_id, post_id, user_id) {
+    fetch('/delete_comment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ comment_id: comment_id})
+    })
+    .then (response => response.json())
+    .then(data => {
+        if (data['message'] == 'deleted') {
+            get_comments(post_id, user_id);
+        }
+    })
+    .catch(error => {
+        console.error('Error', error)
+    });
+}
