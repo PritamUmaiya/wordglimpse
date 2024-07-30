@@ -60,6 +60,16 @@ function convert_to_short_number(value) {
     return formattedValue;
 }
 
+// Convert number to short with 99+
+function short_value(value) {
+    if (value >= 100) {
+        return '99+';
+    }
+    else {
+        return value;
+    }
+}
+
 // Follow or unfollow user profile
 function follow_profile(button, id) {
     let total_followers = document.getElementById('total_followers');
@@ -184,7 +194,7 @@ function openComments(post_id, user_id) {
 
     commentFooter.innerHTML = `
     <input type="text" class="form-control" placeholder="Write a comment..." id="comment_input_${post_id}" title="comment" autocomplete="off">
-    <button type="button" class="btn btn-primary" onclick="create_comment(${post_id}, '{{ user.id }}')">
+    <button type="button" class="btn btn-primary" onclick="create_comment(${post_id}, ${user_id})">
         <i class="bi bi-chevron-right"></i>
     </button>
     `;
@@ -194,6 +204,8 @@ function openComments(post_id, user_id) {
 // Function to create comment
 function create_comment(post_id, user_id) {
     let comment = document.getElementById(`comment_input_${post_id}`).value;
+    let commentCount = document.getElementById(`comment_count_${post_id}`);
+    let commentCountValue = parseInt(commentCount.getAttribute('data-comment-count'));
     
     fetch('/comment', {
         method: 'POST',
@@ -208,6 +220,11 @@ function create_comment(post_id, user_id) {
         if (data['message'] == 'commented') {
             // Load the comments
             get_comments(post_id, user_id);
+            // Increase comment count by 1
+            commentCount.innerText = short_value(commentCountValue + 1);
+            commentCount.setAttribute('data-comment-count', commentCountValue + 1);
+            // Clear the input
+            document.getElementById(`comment_input_${post_id}`).value = '';
         }
     })
     .catch(error => {
@@ -237,7 +254,13 @@ function get_comments(post_id, user_id, offset=0, limit=10) {
     .then(data => {
         if (data['message'] == 'comments') {
             // Clear Previous Comments
-            commentBody.innerHTML = '';
+            if (offset == 0) {
+                commentBody.innerHTML = '';
+            }
+            // Remove load more comment button
+            if (offset != 0) {
+                document.getElementById('loadMoreCommentBtn').remove();
+            }
             // Add New Comments
             let comments = data['comments'];
             
@@ -264,6 +287,15 @@ function get_comments(post_id, user_id, offset=0, limit=10) {
                     </div>
                 `;
             }
+
+            // Add load more button
+            if (comments.length == limit) {
+                commentBody.innerHTML += `
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary" id="loadMoreCommentBtn" onclick="get_comments(${post_id}, ${user_id}, ${offset + limit})">Load More</button>
+                    </div>
+                `;
+            }
         }
     })
     .catch(error => {
@@ -274,6 +306,8 @@ function get_comments(post_id, user_id, offset=0, limit=10) {
 
 // Function to delete comment
 function delete_comment(comment_id, post_id, user_id) {
+    let commentCount = document.getElementById(`comment_count_${post_id}`);
+    let commentCountValue = parseInt(commentCount.getAttribute('data-comment-count'));
     fetch('/delete_comment', {
         method: 'POST',
         headers: {
@@ -285,6 +319,9 @@ function delete_comment(comment_id, post_id, user_id) {
     .then(data => {
         if (data['message'] == 'deleted') {
             get_comments(post_id, user_id);
+            // Decrease comment count by 1
+            commentCount.innerText = short_value(commentCountValue - 1);
+            commentCount.setAttribute('data-comment-count', commentCountValue - 1);
         }
     })
     .catch(error => {

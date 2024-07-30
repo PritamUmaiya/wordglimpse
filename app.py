@@ -62,6 +62,15 @@ def short_number_format(value):
     return formatted_value
 
 
+@app.template_filter('short_count')
+def short_count(value):
+    """Format a number with a short representation i.e if value is greater than 99 than return 99+ else return value"""
+    if value >= 100:
+        return '99+'
+    else:
+        return value
+
+
 @app.context_processor
 def inject_user():
     """Inject categories into the template context"""
@@ -76,6 +85,7 @@ def inject_user():
         return redirect("/")
 
     return dict(categories=CATEGORIES, user=users[0])
+
 
 
 """Send users directory"""

@@ -52,8 +52,13 @@
                                 </button>           
                             </div>
                             <!--Comment button-->
-                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#commentModal" onclick="openComments('{{ post.id }}', '{{ user.id }}')">
+                            
+
+                            <button type="button" class="btn btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#commentModal" onclick="openComments('{{ post.id }}', '{{ user.id }}')">
                                 <i class="bi bi-chat-left-text"></i>
+                                <small class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-body-secondary text-body" id="comment_count_{{ post.id }}" data-comment-count="{{ comments }}">
+                                    {{ comments|short_count }}
+                                </small>
                             </button>
 
                             <!-- More options -->

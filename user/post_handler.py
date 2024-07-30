@@ -40,8 +40,11 @@ def get_post_by_id(post_id, detailed=False):
             votes = db.execute("SELECT vote FROM voted_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
             if len(votes) > 0:
                 voted = votes[0]['vote'] # Get the vote 1 for upvote -1 for downvote
+
+        # Get total number of comments
+        comments = db.execute("SELECT COUNT(*) AS total FROM commented_posts WHERE post_id = ?", post_id)[0]['total']
         
-        return [post, author, upvotes, downvotes, saved, voted]
+        return [post, author, upvotes, downvotes, comments, saved, voted]
 
     else:
         """Post with basic details"""
@@ -73,9 +76,9 @@ def post(post_id):
     if not db.execute("SELECT id FROM posts WHERE id = ?", post_id):
         return apology("Post not found", 404)
 
-    post, author, upvotes, downvotes, saved, voted = get_post_by_id(post_id, detailed=True)
+    post, author, upvotes, downvotes, comments, saved, voted = get_post_by_id(post_id, detailed=True)
 
-    return render_template("post.html", post=post, author=author, upvotes=upvotes, downvotes=downvotes, saved=saved, voted=voted)
+    return render_template("post.html", post=post, author=author, upvotes=upvotes, comments=comments, downvotes=downvotes, saved=saved, voted=voted)
 
 
 ''' --- Post Actions --- '''
