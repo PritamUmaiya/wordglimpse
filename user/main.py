@@ -119,6 +119,20 @@ def edit_profile():
     return render_template("edit_profile.html")
 
 
+@main_bp.route("/posts/manage")
+@login_required
+def manage_posts():
+    # Get the page number
+    page = int(request.args.get('page', 1))
+    offset = (int(page) - 1) * 10
+
+    posts = db.execute("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC LIMIT 10 OFFSET ?", session["user_id"], offset)
+    total_posts = db.execute("SELECT COUNT(id) AS total FROM posts WHERE user_id = ?", session["user_id"])
+    total_pages = (total_posts[0]["total"] + 9) // 10  # Calculate total number of pages
+
+    return render_template("manage_posts.html", posts=posts, page=page, total_pages=total_pages)
+
+
 @main_bp.route("/account")
 @login_required
 def account():

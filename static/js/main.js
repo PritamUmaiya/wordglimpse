@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+
     // Toggle Theme Functions
     const theme = localStorage.getItem('theme');
     const themeToggler = document.querySelector('#themeToggler');
@@ -6,6 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.setAttribute('data-bs-theme', theme);
         if (themeToggler) {
             themeToggler.checked = (theme == 'dark');
+        }
+    } 
+    else {
+        // Based on current time
+        const currentHour = new Date().getHours();
+        if (currentHour >= 6 && currentHour < 18) {
+            document.body.setAttribute('data-bs-theme', 'light');
+        } else {
+            document.body.setAttribute('data-bs-theme', 'dark');
         }
     }
     if (themeToggler) {

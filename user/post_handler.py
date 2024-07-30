@@ -17,55 +17,34 @@ db = SQL("sqlite:///wg.db")
 
 '''--- Post helpers functions ---'''
 
-def get_post_by_id(post_id, detailed=False):
+def get_post_by_id(post_id):
     """Get post by ID"""
-    if detailed:
-        """Post with full details"""
-        post = db.execute("SELECT * FROM posts WHERE id = ?", post_id)[0]
+    """Post with full details"""
+    post = db.execute("SELECT * FROM posts WHERE id = ?", post_id)[0]
 
-        # Get the author details of the post
-        author = db.execute("SELECT * FROM users WHERE id = ?", post["user_id"])[0]
+    # Get the author details of the post
+    author = db.execute("SELECT * FROM users WHERE id = ?", post["user_id"])[0]
 
-        # Get total upvotes and downvotes
-        upvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, 1)[0]['total']
-        downvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, -1)[0]['total']
+    # Get total upvotes and downvotes
+    upvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, 1)[0]['total']
+    downvotes = db.execute("SELECT COUNT(*) AS total FROM voted_posts WHERE post_id = ? AND vote = ?", post_id, -1)[0]['total']
 
-        # If user has logged in check if he has saved the post and voted on the post
-        saved = False
-        voted = False
-        if session.get("user_id"):
-            saves = db.execute("SELECT * FROM saved_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
-            if len(saves) > 0:
-                saved = True
-            votes = db.execute("SELECT vote FROM voted_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
-            if len(votes) > 0:
-                voted = votes[0]['vote'] # Get the vote 1 for upvote -1 for downvote
+    # If user has logged in check if he has saved the post and voted on the post
+    saved = False
+    voted = False
+    if session.get("user_id"):
+        saves = db.execute("SELECT * FROM saved_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
+        if len(saves) > 0:
+            saved = True
+        votes = db.execute("SELECT vote FROM voted_posts WHERE post_id = ? AND user_id = ?", post_id, session["user_id"])
+        if len(votes) > 0:
+            voted = votes[0]['vote'] # Get the vote 1 for upvote -1 for downvote
 
-        # Get total number of comments
-        comments = db.execute("SELECT COUNT(*) AS total FROM commented_posts WHERE post_id = ?", post_id)[0]['total']
-        
-        return [post, author, upvotes, downvotes, comments, saved, voted]
+    # Get total number of comments
+    comments = db.execute("SELECT COUNT(*) AS total FROM commented_posts WHERE post_id = ?", post_id)[0]['total']
+    
+    return [post, author, upvotes, downvotes, comments, saved, voted]
 
-    else:
-        """Post with basic details"""
-        post = db.execute("SELECT * FROM posts WHERE id = ?", post_id)[0]
-
-        # Get the author details of the post
-        author = db.execute("SELECT * FROM users WHERE id = ?", post["user_id"])[0]
-
-        return [post, author]
-
-
-# TODO: Add a function to get posts by user ID
-def get_posts_by_user_id(user_id, detailed=False, sord_by='relevence', order_by='DESC', limit=10, offset=0):
-    """Get posts by user ID"""
-    ...
-
-
-# TODO: Add a function to get posts by category
-def get_post_by_category(category, detailed=False, sord_by='relevence', order_by='DESC', limit=10, offset=0):
-    """Get posts by category"""
-    ...
 
 
 ''''--- Post Routes ---'''
@@ -76,7 +55,7 @@ def post(post_id):
     if not db.execute("SELECT id FROM posts WHERE id = ?", post_id):
         return apology("Post not found", 404)
 
-    post, author, upvotes, downvotes, comments, saved, voted = get_post_by_id(post_id, detailed=True)
+    post, author, upvotes, downvotes, comments, saved, voted = get_post_by_id(post_id)
 
     return render_template("post.html", post=post, author=author, upvotes=upvotes, comments=comments, downvotes=downvotes, saved=saved, voted=voted)
 

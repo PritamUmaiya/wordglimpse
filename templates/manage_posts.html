@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Manage Posts
+{% endblock %}
+
+{% block content %}
+    <section class="middle-content p-2">
+        <div class="middle-content-small">
+            <h5 class="mb-5 mt-3 text-primary">Manage Posts</h5>
+            {% if posts %}
+                <div class="mb-5">
+                    {% for post in posts %}
+                        <!-- Horizontal Post card -->
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-3">
+                                    <a href="/post/{{ post.id }}">
+                                        <img src="{{ post.image }}" class="img-fluid h-100 object-fit-cover rounded-start" alt="Image">
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-truncate">{{ post.title }}</h5>
+                                        <p class="card-text">
+                                            <small class="text-muted">{{ post.created_at|format_date }}</small>
+                                            <br>
+                                            <small class="text-muted">Id: {{ post.id }}</small>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-3 d-flex flex-row justify-content-center align-items-center gap-1">
+                                    <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#updatePostModal" onclick="edit_post('{{ post.id }}')" title="Edit">
+                                        <i class="bi bi-pen text-primary"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deletePostModal" onclick="delete_post('{{ post.id }}')" title="Delete">
+                                        <i class="bi bi-trash text-danger"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Next and Prev button with page number -->
+                <div class="d-flex justify-content-center mt-3">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page > 1 %}
+                                <li class="page-item"><a class="page-link" href="/posts/manage?page={{ page - 1 }}">Prev</a></li>
+                            {% endif %}
+                                <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+                            {% if page < total_pages %} 
+                                <li class="page-item">
+                                    <a class="page-link" href="/posts/manage?page={{ page + 1 }}">Next</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            {% else %}
+                <p class="text-center text-body-secondary text-small">Your posts will appear here!</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
