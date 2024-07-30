@@ -23,8 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // Get the response as JSON
         let errors = await response.json();
+        console.log(errors);
         // If no errors, submit the form
-        if (errors.length === 0) {
+        if (errors.length == 0) {
             this.submit();
         } else {
             // Handle errors

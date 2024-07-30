@@ -150,7 +150,7 @@
                 <i class="bi bi-collection"></i>
                 <span>Following</span>
             </button>
-            <button class="btn d-md-none" type="button" title="Create New" {% if user %}
+            <button class="btn btn-sm p-0 d-md-none" type="button" title="Create New" {% if user %}
                 data-bs-toggle="offcanvas" data-bs-target="#newPostCard" aria-controls="newPostCard" {% else %}
                 data-bs-toggle="modal" data-bs-target="#loginRequiredModal" {% endif %}>
                 <i class="bi bi-plus bg-primary text-white rounded-circle px-2" style="font-size:35px;"></i>
@@ -313,6 +313,22 @@
                 </div>
             </div>
         </div>
+
+        <!-- Common Modal for Share post, Report Post and Notify Admin -->
+        <div class="modal" id="moreModal" tabindex="-1" aria-labelledby="moreModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="moreModalLabel"><!--Title Will be inserted Accordingly--></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="moreModalBody">
+                        <!--Body Will be inserted Accordingly-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Delete Account Modal -->
         <div class="modal" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

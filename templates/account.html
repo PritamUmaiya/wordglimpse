@@ -61,7 +61,7 @@
                                     <input type="hidden" name="has_username" id="has_username" value="{{ user['username'] }}">
                                 {% endif %}
                                 
-                                <p style="overflow: auto;"><small>wordglimpse.com/@<span id="usernamePreview">{% if user['username'] %}{{ user['username'] }}{% endif %}</span></small></p>
+                                <p style="overflow: auto;"><small><span id="rootUrl"></span>/@<span id="usernamePreview">{% if user['username'] %}{{ user['username'] }}{% endif %}</span></small></p>
                                 <!--Validate Username-->
                                 <div class="input-group">
                                     <span class="input-group-text">@</span>

@@ -21,7 +21,7 @@
                     </a>
                     {% if user %}
                         <!-- Check if user is looged in and saved the post -->
-                        <button type="button" class="btn" onclick="save_post(this, '{{ post.id }}')">
+                        <button type="button" class="btn" onclick="save_post(this, '{{ post.id }}')" title="Save post">
                             <i class="bi bi-bookmark{% if saved %}-fill text-primary{% endif %}"></i>
                         </button>
                     {% else %}
@@ -41,35 +41,43 @@
                             <!--Voting buttons-->
                             <div class="btn-group btn-group-sm border rounded-pill">
                                 <!--Upvote button-->
-                                <button type="button" class="btn" id="upvote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}', 1)">
+                                <button type="button" class="btn" id="upvote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}', 1)" title="Upvote this post">
                                     <i class="bi bi-caret-up{% if voted == 1 %}-fill text-primary{% endif %}"></i>
                                 </button>
                                 <div class="px-3 border-start border-end d-flex flex-column align-items-center justify-content-center">
                                     <span id="upvote_count_{{ post.id }}" data-upvotes="{{ upvotes }}">{{ upvotes|short_number }}</span>
                                 </div>
-                                <button type="button" class="btn" id="downvote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}', -1)">
+                                <button type="button" class="btn" id="downvote_btn_{{ post.id }}" onclick="vote_post('{{ post.id }}', -1)" title="Downvote this post">
                                     <i class="bi bi-caret-down{% if voted and voted == -1 %} text-danger{% endif %}"></i>
                                 </button>           
                             </div>
                             <!--Comment button-->
-                            
-
-                            <button type="button" class="btn btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#commentModal" onclick="openComments('{{ post.id }}', '{{ user.id }}')">
+                            <button type="button" class="btn btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#commentModal" onclick="openComments('{{ post.id }}', '{{ user.id }}')" title="See comments">
                                 <i class="bi bi-chat-left-text"></i>
                                 <small class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-body-secondary text-body" id="comment_count_{{ post.id }}" data-comment-count="{{ comments }}">
                                     {{ comments|short_count }}
                                 </small>
                             </button>
-
                             <!-- More options -->
                             <div class="dropup-left dropup">
-                                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More options">
                                     <i class="bi bi-three-dots"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Action two</a></li>
-                                <li><a class="dropdown-item" href="#">Action three</a></li>
+                                    <li>
+                                        <button class="dropdown-item d-flex flex-row align-items-center gap-3" title="Share this post" data-bs-toggle="modal" data-bs-target="#moreModal" onclick="sharePost('{{ post.id }}')">
+                                            <i class="bi bi-share"></i>
+                                            <span>Share</span>
+                                        </button>
+                                        <button class="dropdown-item d-flex flex-row align-items-center gap-3" title="Report about this post" data-bs-toggle="modal" data-bs-target="#moreModal" onclick="reportPost('{{ post.id }}')">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            <span>Report</span>
+                                        </button>
+                                        <button class="dropdown-item d-flex flex-row align-items-center gap-3" title="Notify admin about errors" data-bs-toggle="modal" data-bs-target="#moreModal" onclick="notifyAdmin('{{ post.id }}')">
+                                            <i class="bi bi-person-exclamation"></i>
+                                            <span>Notify</span>
+                                        </button>
+                                    </li>
                                 </ul>
                             </div>
                         {% else %}
@@ -87,8 +95,11 @@
                                 </button>           
                             </div>
                             <!--Comment button-->
-                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
+                            <button type="button" class="btn btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
                                 <i class="bi bi-chat-left-text"></i>
+                                <small class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-body-secondary text-body">
+                                    {{ comments|short_count }}
+                                </small>
                             </button>
                             <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
                                 <i class="bi bi-three-dots"></i>

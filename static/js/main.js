@@ -15,32 +15,32 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('theme', newTheme);
         });
     }
+    // Add root url to username
+    if (document.getElementById('rootUrl')) {
+        document.getElementById('rootUrl').innerHTML = window.location.origin;
+    }
 });
 
-// Search Toggler Functions
-function openSearch() {
-    document.getElementById('searchContainer').classList.remove('d-none');
-    document.getElementById('searchInput').focus(); // Opens keyboard by default in extra small devices
-}
-function closeSearch() {
-    document.getElementById('searchContainer').classList.add('d-none');
-}
-
-// Toggle Arrow for category in Left menu
-function toggleArrow() {
-    document.getElementById('keyArrDown').classList.toggle('rotate-180');
-}
-
+/* 
+* ---- Helper Functions ----
+*/
 // Count the letters of textarea
-function countLetter(textareaId, counterId) {
-    var textarea = document.getElementById(textareaId);
-    var letterCount = textarea.value.length;
+function countLetter(inputId, counterId) {
+    var input = document.getElementById(inputId);
+    var letterCount = input.value.length;
     var counterDisplay = document.getElementById(counterId);
     counterDisplay.textContent = letterCount;
 }
 
+// Function to format datetime
+function formatDateTime(datetimeStr) {
+    let date = new Date(datetimeStr);
+    let options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return date.toLocaleDateString('en-US', options);
+}
+
 // Convert number to short number
-function convert_to_short_number(value) {
+function short_number(value) {
     let formattedValue;
     if (value >= 1000000) {
         formattedValue = (value / 1000000).toFixed(1) + 'M';
@@ -70,6 +70,20 @@ function short_value(value) {
     }
 }
 
+// Search Toggler Functions
+function openSearch() {
+    document.getElementById('searchContainer').classList.remove('d-none');
+    document.getElementById('searchInput').focus(); // Opens keyboard by default in extra small devices
+}
+function closeSearch() {
+    document.getElementById('searchContainer').classList.add('d-none');
+}
+
+// Toggle Arrow for category in Left menu
+function toggleArrow() {
+    document.getElementById('keyArrDown').classList.toggle('rotate-180');
+}
+
 // Follow or unfollow user profile
 function follow_profile(button, id) {
     let total_followers = document.getElementById('total_followers');
@@ -93,7 +107,7 @@ function follow_profile(button, id) {
             button.innerText = 'Following';
             button.setAttribute('title', 'Unfollow');
             if (total_followers) {
-                total_followers.innerText = convert_to_short_number(followers_count + 1);
+                total_followers.innerText = short_number(followers_count + 1);
                 total_followers.setAttribute('data-total-followers', followers_count + 1);
                 if (followers_count + 1 > 1) {
                     total_followers_text.innerText = 'Followers';
@@ -107,7 +121,7 @@ function follow_profile(button, id) {
             button.innerText = 'Follow';
             button.setAttribute('title', 'Follow');
             if (total_followers) {
-                total_followers.innerText = convert_to_short_number(followers_count - 1);
+                total_followers.innerText = short_number(followers_count - 1);
                 total_followers.setAttribute('data-total-followers', followers_count - 1);
                 if (followers_count - 1 > 1) {
                     total_followers_text.innerText = 'Followers';
@@ -123,6 +137,9 @@ function follow_profile(button, id) {
     });
 }
 
+/*
+ *-------  Post related Functions -------
+ */
 // Function to save post
 function save_post(button, id) {
     fetch('/save_post', {
@@ -176,7 +193,7 @@ function vote_post(id, vote) {
         }
 
         // Handle upvote count
-        upvote_count.innerText = convert_to_short_number(parseInt(upvotes) + parseInt(data['upvote']));
+        upvote_count.innerText = short_number(parseInt(upvotes) + parseInt(data['upvote']));
         upvote_count.setAttribute('data-upvotes', parseInt(upvotes) + parseInt(data['upvote']));
         
     })
@@ -184,6 +201,10 @@ function vote_post(id, vote) {
         console.error('Error:', error);
     });
 }
+
+/*
+ *-------  Comment related Functions -------
+ */
 
 // Fill the comment modal with data
 function openComments(post_id, user_id) {
@@ -230,13 +251,6 @@ function create_comment(post_id, user_id) {
     .catch(error => {
         console.error('Error:', error);
     });
-}
-
-// Function to format datetime
-function formatDateTime(datetimeStr) {
-    let date = new Date(datetimeStr);
-    let options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return date.toLocaleDateString('en-US', options);
 }
 
 // Function to get comments
@@ -303,7 +317,6 @@ function get_comments(post_id, user_id, offset=0, limit=10) {
     });
 }
 
-
 // Function to delete comment
 function delete_comment(comment_id, post_id, user_id) {
     let commentCount = document.getElementById(`comment_count_${post_id}`);
@@ -327,4 +340,19 @@ function delete_comment(comment_id, post_id, user_id) {
     .catch(error => {
         console.error('Error', error)
     });
+}
+
+// TO DO: Function to share post
+function sharePost(id) {
+    return;
+}
+
+// TO DO: Function to report post
+function reportPost(id) {
+    return;
+}
+
+// TO DO: Function to notify admin
+function notifyAdmin(id) {
+    return;
 }

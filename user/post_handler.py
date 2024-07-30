@@ -83,12 +83,13 @@ def post(post_id):
 
 ''' --- Post Actions --- '''
 
+
 @post_bp.route("/create_post", methods=["POST"])
 @login_required
 def create_post():
     """Create Post"""
     # Get form data
-    file = request.files['post-image']
+    file = request.files['image']
     title = request.form.get("post-title")
     category = request.form.get("post-category")
     content = request.form.get("post-content")
@@ -124,7 +125,8 @@ def create_post():
     db.execute("UPDATE posts SET image = ? WHERE id = ?", "/" + output_path, post_id)
 
     flash("Posted successfully", "success")
-    return redirect(request.referrer)
+    # Redirect to the post page
+    return redirect("/post/" + str(post_id))
 
 
 @post_bp.route("/save_post", methods=["POST"])

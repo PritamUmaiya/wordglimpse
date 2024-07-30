@@ -47,7 +47,7 @@ def validate_post():
     # Validate form data
     errors = []
 
-    errors.append(json.loads(validate_image()))
+    errors += json.loads(validate_image())
 
     if not title:
         errors.append({"title": "Please enter a title!"})
