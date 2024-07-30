@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                                 <div class="col-3 d-flex flex-row justify-content-center align-items-center gap-1">
-                                    <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#updatePostModal" onclick="edit_post('{{ post.id }}')" title="Edit">
+                                    <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#updatePostModal" onclick="edit_post({{ post }})" title="Edit">
                                         <i class="bi bi-pen text-primary"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deletePostModal" onclick="delete_post('{{ post.id }}')" title="Delete">

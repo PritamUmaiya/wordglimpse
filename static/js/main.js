@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     // Toggle Theme Functions
     const theme = localStorage.getItem('theme');
     const themeToggler = document.querySelector('#themeToggler');
@@ -210,6 +209,18 @@ function vote_post(id, vote) {
     .catch(error => {
         console.error('Error:', error);
     });
+}
+
+// Manage posts Edit
+function edit_post(post) {
+    document.getElementById("editPostContent").value = post.content;
+    document.getElementById("editPostContentCount").innerText = post.content.length;
+    let func = `update_post(${post.id})`;
+    document.getElementById("updatePostBtn").setAttribute('onclick', func);
+}
+// Function to update post
+function update_post(post_id) {
+    alert('working ' + post_id);
 }
 
 /*
