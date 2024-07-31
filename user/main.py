@@ -139,6 +139,49 @@ def account():
     return render_template("account.html")
 
 
+@main_bp.route("/followings")
+@login_required
+def followings():
+    """Profiles that user Follow"""
+    # Get all the followings
+    page = int(request.args.get("page", 1))
+    offset = (page - 1) * 30
+    followings_ids = db.execute("SELECT profile_id FROM followings WHERE user_id = ? ORDER BY id DESC LIMIT 30 OFFSET ?", session["user_id"], offset)
+    followings_id = [row["profile_id"] for row in followings_ids]
+    
+    followings = []
+    if len(followings_id) > 0:
+        # Get all the followings
+        followings = db.execute("SELECT * FROM users WHERE id IN (?)", followings_id)
+    
+    total_followings = len(followings)
+    total_pages = (total_followings + 29) // 30  # Calculate total number of pages
+
+    return render_template("followings.html", total_followings=total_followings, followings=followings, page=page, total_pages=total_pages)
+
+
+@main_bp.route("/followers")
+@login_required
+def followers():
+    """Profiles that follow user"""
+    # Get all the followers
+    page = int(request.args.get("page", 1))
+    offset = (page - 1) * 30
+    followers_ids = db.execute("SELECT user_id FROM followings WHERE profile_id = ? ORDER BY id DESC LIMIT 30 OFFSET ?", session["user_id"], offset)
+    followers_id = [row["user_id"] for row in followers_ids]
+    
+    followers = []
+    if len(followers_id) > 0:
+        # Get all the followers
+        followers = db.execute("SELECT * FROM users WHERE id IN (?)", followers_id)
+    
+    total_followers = len(followers)
+    total_pages = (total_followers + 29) // 30  # Calculate total number of pages
+
+    return render_template("followers.html", total_followers=total_followers, followers=followers, page=page, total_pages=total_pages)
+
+
+
 """ --- User Authentication routes --- """
 
 @main_bp.route("/signup", methods=["GET", "POST"])

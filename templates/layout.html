@@ -338,15 +338,21 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <textarea class="form-control" name="post-content" rows="6" placeholder="Write here.." maxlength="1000" id="editPostContent" oninput="countLetter('editPostContent', 'editPostContentCount')"></textarea>
-                        <p class="d-flex flex-row justify-content-between p-2">
-                            <span><small class="text-danger d-none" id="editContentError"></small></span>
-                            <span><span id="editPostContentCount">0 </span><span> / 1000</span></span>
-                        </p>
+                        <form action="/update_post" method="post" id="updatePostForm" enctype="multipart/form-data">
+                            <input type="hidden" name="post-id" id="editPostId">
+                            <div class="mb-3">
+                                <textarea class="form-control" name="post-content" rows="6" placeholder="Write here.."
+                                    maxlength="1000" id="editPostContent"
+                                    oninput="countLetter('editPostContent', 'editPostContentCount')"></textarea>
+                                <p class="d-flex flex-row justify-content-end p-2">
+                                    <span><span id="editPostContentCount">0 </span><span> / 1000</span></span>
+                                </p>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="updatePostBtn">Save</button>
+                        <button type="submit" class="btn btn-primary" form="updatePostForm">Save</button>
                     </div>
                 </div>
             </div>
@@ -360,14 +366,17 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            <small><strong class="text-info">Important!</strong><br><br> Deleting post is permanent and can not
-                                be undone. People will loose access to this post.</small>
+                            <small>
+                                <strong class="text-info">Important!</strong><br><br> 
+                                Deleting post is permanent and can not be undone. People will loose access to this post.
+                            </small>
                         </p>
                         <form action="/delete_post" method="post">
                             <input type="hidden" name="post-id" id="deletePostId">
-                            <p class="d-flex flex-row justify-content-between align-items-center"><span
-                                    class="text-danger">Delete Anyways</span><button type="submit" class="btn btn-danger"
-                                    title="Delete">Delete</button></p>
+                            <p class="d-flex flex-row justify-content-between align-items-center">
+                                <span class="text-danger">Delete Anyways</span>
+                                <button type="submit" class="btn btn-danger" title="Delete">Delete</button>
+                            </p>
                         </form>
                     </div>
                 </div>

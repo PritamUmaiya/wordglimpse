@@ -213,15 +213,15 @@ function vote_post(id, vote) {
 
 // Manage posts Edit
 function edit_post(post) {
+    document.getElementById("editPostId").value = post.id;
     document.getElementById("editPostContent").value = post.content;
     document.getElementById("editPostContentCount").innerText = post.content.length;
-    let func = `update_post(${post.id})`;
-    document.getElementById("updatePostBtn").setAttribute('onclick', func);
 }
-// Function to update post
-function update_post(post_id) {
-    alert('working ' + post_id);
+
+function delete_post(post_id) {
+    document.getElementById("deletePostId").value = post_id;
 }
+
 
 /*
  *-------  Comment related Functions -------

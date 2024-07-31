@@ -187,7 +187,72 @@ def vote_post():
     else:
         return jsonify({'message': 'downvoted', 'upvote': 0})
 
+
+@post_bp.route("/update_post", methods=["POST"])
+@login_required
+def update_post():
+    """Update post content"""
+    post_id = request.form.get("post-id")
+    content = request.form.get("post-content")
     
+    if not post_id:
+        flash("Could not update post!", "danger")
+        return redirect(request.referrer)
+
+    if not content or content == "":
+        flash("Content can not be blank!", "danger")
+        return redirect(request.referrer)
+    
+    if len(content) > 1000 or len(content) < 200:
+        flash("Content must be between 200 and 1000 characters", "danger")
+        return redirect(request.referrer)
+    
+    # Check if user is the owner of the post
+    posts = db.execute("SELECT user_id FROM posts WHERE id = ?", post_id)
+
+    if len(posts) == 0:
+        flash("Post not found", "danger")
+        return redirect(request.referrer)
+
+    # Update post content
+    db.execute("UPDATE posts SET content = ? WHERE id = ?", content, post_id)
+
+    flash("Post updated successfully", "success")
+    return redirect(request.referrer)
+
+
+@post_bp.route("/delete_post", methods=["POST"])
+@login_required
+def delete_post():
+    """Delete post"""
+    post_id = request.form.get("post-id")
+
+    if not post_id:
+        flash("Could not delete post", "danger")
+        return redirect(request.referrer)
+
+    # Check if user is the owner of the post
+    posts = db.execute("SELECT user_id FROM posts WHERE id = ?", post_id)
+
+    if len(posts) == 0:
+        flash("Post not found", "danger")
+        return redirect(request.referrer)
+
+    # Delete post image
+    image = db.execute("SELECT image FROM posts WHERE id = ?", post_id)
+    image = image[0]
+
+    if image["image"]:
+        if os.path.exists(image["image"][1:]):
+            os.remove(image["image"][1:])
+    
+    # Delete the post
+    db.execute("DELETE FROM posts WHERE id = ?", post_id)
+
+    flash("Post deleted successfully", "info")
+    return redirect(request.referrer)
+
+
 @post_bp.route("/comment", methods=["POST"])
 @login_required
 def comment():

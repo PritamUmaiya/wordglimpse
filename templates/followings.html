@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Followings
+{% endblock %}
+
+{% block content %}
+    <section class="middle-content p-2">
+        <div class="middle-content-small">
+            <!-- Followings and followers button -->
+            <div class="d-flex justify-content-around align-items-center mb-5 mt-3">
+                <a href="/followings" class="btn btn-primary btn-sm" style="width:40%;border:2px solid var(--bs-primary);">Followings</a>
+                <a href="/followers" class="btn btn-outline-primary btn-sm" style="width:40%;border:2px solid var(--bs-primary);">Followers</a>
+            </div>
+
+            <!-- Followings -->
+            {% if followings %}
+                <div class="mb-5">
+                    {% for following in followings %}
+                        <div class="card p-2 mb-3">
+                            <div class="row g-0">
+                                <div class="col-2">
+                                    <a href="/profile/{{ following.id }}">
+                                        <img src="{% if following.avatar %}{{ following.avatar }}{% else %}/static/image/user.png{% endif %}" alt="User" class="rounded-circle object-fit-cover" style="width:55px; height:55px;">
+                                    </a>
+                                </div>
+                            
+                                <div class="col-7">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-truncate">
+                                            <a href="/profile/{{ following.id }}" class="text-decoration-none text-bg">{{ following.fname }}</a>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="col-3 d-flex flex-row justify-content-center align-items-center gap-1">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="follow_profile(this, '{{ following.id }}')">Unfollow</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            <!-- Next and Prev button with page number -->
+            <div class="d-flex justify-content-center mt-3">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if page > 1 %}
+                            <li class="page-item"><a class="page-link" href="/follwings?page={{ page - 1 }}">Prev</a></li>
+                        {% endif %}
+                            <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+                        {% if page < total_pages %} 
+                            <li class="page-item"><a class="page-link" href="/followings?page={{ page + 1 }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% else %}
+                <p class="text-center text-body-secondary text-small">Follow peoples to see them here!</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
