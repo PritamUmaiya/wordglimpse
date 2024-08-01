@@ -5,6 +5,7 @@
     {% if user %}
         <script src="/static/js/create_post.js"></script>
         <!-- Add messages handler -->
+        <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
         <script src="/static/js/messages.js"></script>
     {% endif %}
     <!--Page specificc script-->
@@ -16,6 +17,9 @@
 {% endblock %}
 
 {% block body %}
+    {% if user %}
+    <input type="hidden" id="currentUserId" value="{{ user.id }}">
+    {% endif %}
     <!-- ==== HEADER ==== -->
     <header class="fixed-top bg-body d-flex flex-row justify-content-between align-items-center">
         <!--Left Menu Btn-->
@@ -330,12 +334,12 @@
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="messagingBody">
+                    <div class="modal-body" id="messageBody">
                         
                     </div>
                     <div class="border-top p-2 d-flex flex-row gap-2" id="messagingFooter">
                         <input type="text" id="messageInput" class="form-control" placeholder="Type your message here...">
-                        <button onclick="sendMessage()" type="button" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" id="sendMessageBtn">
                             <i class="bi bi-send-fill"></i>
                         </button>
                     </div>

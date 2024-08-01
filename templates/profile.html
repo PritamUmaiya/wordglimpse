@@ -28,13 +28,12 @@
             <!--Log in required to do this action-->
             <div class="mt-5 mb-2 d-flex flex-row align-items-center justify-content-around">
                 {% if user %}
-
                     {% if profile['offer_messaging'] == 1 %}
                         {% if profile['id'] == user['id'] %}
                             <!-- If user is the same than don't allow messaging -->
                             <button type="button" class="btn text-primary profile-btn-top">Message</button>
                         {% else %}
-                            <button type="button" class="btn text-primary profile-btn-top" data-bs-toggle="modal" data-bs-target="#messagingModal" onclick="open_messages('{{ profile.avatar }}', '{{ profile.fname }}')">Message</button>
+                            <button type="button" class="btn text-primary profile-btn-top" data-bs-toggle="modal" data-bs-target="#messagingModal" onclick="open_messages('{{ profile.id }}', '{{ profile.avatar }}', '{{ profile.fname }}')">Message</button>
                         {% endif %}
                     {% else %}
                         <button type="button" class="btn text-primary profile-btn-top">Posts</button>

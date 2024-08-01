@@ -1,12 +1,15 @@
 from cs50 import SQL
 from datetime import datetime, timedelta
-from flask import Flask, redirect, send_from_directory, session, request
+from flask import Flask, redirect, send_from_directory, session
 from flask_session import Session
+from flask_socketio import SocketIO, emit, join_room
 
 from user.main import main_bp
 from user.helpers import apology, CATEGORIES
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'x7hs52hjsh89qnsjTbFjsnsFj0QQ1y'
+socketio = SocketIO(app)
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = True
@@ -102,6 +105,17 @@ def uploaded_post(filename):
     return send_from_directory(app.config['UPLOAD_POST_FOLDER'], filename)
 
 
+''' --- Messaging Actions --- '''
+@socketio.on('send_message')
+def handle_send_message(data):
+    # Ideally, you should save the message to the database here
+    emit('receive_message', data, room=data['receiver_id'])
+
+@socketio.on('join')
+def on_join(data):
+    join_room(data['user_id'])
+
+
 ''' ---- Error Handlers ---- '''
 
 @app.errorhandler(404)
@@ -117,4 +131,4 @@ def internale_server_error(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
