@@ -1,14 +1,14 @@
 from cs50 import SQL
 from datetime import datetime, timedelta
-from flask import Flask, redirect, send_from_directory, session
+from flask import Flask, redirect, send_from_directory, request, session, jsonify
 from flask_session import Session
-from flask_socketio import SocketIO, emit, join_room
+from flask_socketio import SocketIO, join_room, leave_room, send
 
 from user.main import main_bp
 from user.helpers import apology, CATEGORIES
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'x7hs52hjsh89qnsjTbFjsnsFj0QQ1y'
+app.config['SECRET_KEY'] = 'X7TS4-3FX35-N1AQW-J90RT-F67NP'
 socketio = SocketIO(app)
 
 # Configure session to use filesystem (instead of signed cookies)
@@ -106,14 +106,43 @@ def uploaded_post(filename):
 
 
 ''' --- Messaging Actions --- '''
-@socketio.on('send_message')
-def handle_send_message(data):
-    # Ideally, you should save the message to the database here
-    emit('receive_message', data, room=data['receiver_id'])
+
+@app.route('/load_chat', methods=['POST'])
+def load_chat():
+    data = request.get_json()
+    user_id = data['user_id']
+    profile_id = data['profile_id']
+    messages = db.execute("""
+        SELECT * FROM messages 
+        WHERE (sender_id = :user_id AND receiver_id = :profile_id) 
+        OR (sender_id = :profile_id AND receiver_id = :user_id)
+        ORDER BY created_at
+    """, user_id=user_id, profile_id=profile_id)
+    return jsonify(messages)
 
 @socketio.on('join')
-def on_join(data):
-    join_room(data['user_id'])
+def handle_join(data):
+    room = data['room']
+    join_room(room)
+
+@socketio.on('leave')
+def handle_leave(data):
+    room = data['room']
+    leave_room(room)
+
+@socketio.on('send_message')
+def handle_send_message(data):
+    user_id = data['user_id']
+    profile_id = data['profile_id']
+    message = data['message']
+    
+    db.execute("""
+        INSERT INTO messages (sender_id, receiver_id, message) 
+        VALUES (:user_id, :profile_id, :message)
+    """, user_id=user_id, profile_id=profile_id, message=message)
+    
+    room = f"{user_id}-{profile_id}" if user_id < profile_id else f"{profile_id}-{user_id}"
+    send(data, room=room)
 
 
 ''' ---- Error Handlers ---- '''

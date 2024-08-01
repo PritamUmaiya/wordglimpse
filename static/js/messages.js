@@ -1,70 +1,49 @@
-function initializeSocketConnection(currentUserId) {
-    // Initialize socket connection
-    const socket = io.connect(window.location.origin);
-    socket.emit('join', { user_id: currentUserId });
+let sendMessageBtn;
 
-    function sendMessage() {
-        const messageText = document.getElementById('messageInput').value;
-        const receiverId = document.getElementById('sendMessageBtn').getAttribute('data-receiver-id');
+document.addEventListener('DOMContentLoaded', function() {
+    sendMessageBtn = document.getElementById('sendMessageBtn');
+});
 
-        const messageData = {
-            receiver_id: receiverId,
-            message_text: messageText,
-        };
-        // Add the message to the chat window
-        const chatWindow = document.getElementById('messageBody');
-        const newMessage = document.createElement('div');
-        const datetime = formatDateTime(new Date());
-        
-        newMessage.classList.add('message', 'justify-content-end');
-        newMessage.innerHTML = `
-            <div class="message-content">
-                <p class="message-text">${messageText}</p>
-                <small class="text-body-secondary text-end">${datetime}</small>
-            </div>
-        `;
-        chatWindow.appendChild(newMessage);
+const socket = io();
 
-        // Send the message to the server
-        socket.emit('send_message', messageData);
-        document.getElementById('messageInput').value = '';  // Clear input field
-    }
+function loadChat(userId, profileId) {
+    fetch('/load_chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: parseInt(userId), profile_id: parseInt(profileId) }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        const chatBody = document.getElementById('chatBody');
+        chatBody.innerHTML = '';
+        data.forEach(msg => {
+            const messageElement = document.createElement('p');
+            messageElement.innerHTML = `<strong>${msg.sender_id}:</strong> ${msg.message}`;
+            chatBody.appendChild(messageElement);
+        });
 
-    socket.on('receive_message', function(data) {
-        const chatWindow = document.getElementById('messageBody');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'justify-content-start');
-        const datetime = formatDateTime(new Date());
-        newMessage.innerHTML = `
-            <div class="message-content">
-                <p class="message-text">${data.message_text}</p>
-                <small class="text-body-secondary">${datetime}</small>
-            </div>
-        `;
-        chatWindow.appendChild(newMessage);
+        const room = userId < profileId ? `${userId}-${profileId}` : `${profileId}-${userId}`;
+        socket.emit('join', { room: room });
+
+        sendMessageBtn.setAttribute('onclick', `sendMessage(${userId}, ${profileId})`);
     });
-
-    // Attach the sendMessage function to the send button
-    document.getElementById('sendMessageBtn').onclick = sendMessage;
 }
 
-// Fill the data of messaging box with sender and receiver
-function open_messages(receiverId, receiver_avatar, receiver_fname) {
-    if (receiver_avatar == null) {
-        document.getElementById("messageAvatar").setAttribute("src", receiver_avatar);
-    }
+function sendMessage(userId, profileId) {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+    if (message === '') return;
 
-    if (receiver_fname.length > 10) {
-        receiver_fname = receiver_fname.substring(0, 10) + "...";
-    }
-    document.getElementById("messageFname").innerHTML = receiver_fname;
-
-    // Set the receiver ID as a data attribute on the send button
-    document.getElementById("sendMessageBtn").setAttribute("data-receiver-id", receiverId);
+    const room = userId < profileId ? `${userId}-${profileId}` : `${profileId}-${userId}`;
+    socket.emit('send_message', { user_id: userId, profile_id: profileId, message: message, room: room });
+    messageInput.value = '';
 }
 
-// Call the function after the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', (event) => {
-    const currentUserId = document.getElementById("currentUserId").value;
-    initializeSocketConnection(currentUserId);
+socket.on('message', function(data) {
+    const chatBody = document.getElementById('chatBody');
+    const messageElement = document.createElement('p');
+    messageElement.innerHTML = `<strong>${data.user_id}:</strong> ${data.message}`;
+    chatBody.appendChild(messageElement);
 });
