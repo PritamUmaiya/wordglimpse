@@ -325,14 +325,17 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content h-100">
                     <div class="modal-header">
-                        <h4 class="modal-title fs-5 text-truncate">Chat</h4>
+                        <div class="d-flex flex-row gap-2">
+                            <img src="/static/image/user.png" alt="User" class="rounded-circle object-fit-cover" style="width:30px;width:30px;" id="messageAvatar">
+                            <h4 class="modal-title fs-5 text-truncate" id="messageFname">Chat</h4>
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="chatBody">
                         
                     </div>
                     <div class="border-top p-2 d-flex flex-row gap-2">
-                        <input type="text" id="messageInput" class="form-control" placeholder="Type a message">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Type a message" autocomplete="off">
                         <button class="btn btn-primary" id="sendMessageBtn">Send</button>
                     </div>
                 </div>

@@ -48,6 +48,46 @@ function formatDateTime(datetimeStr) {
     return date.toLocaleDateString('en-US', options);
 }
 
+function formatTime(datetimeStr) {
+    let date = new Date(datetimeStr);
+    
+    // Get the hours, minutes, and AM/PM
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    
+    // Convert 24-hour format to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    
+    // Pad minutes with leading zero if needed
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    
+    let formattedTime = hours + ':' + minutes + ' ' + ampm;
+    return formattedTime;
+}
+
+
+function formatDateLabel(date) {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    if (isSameDay(date, today)) {
+        return 'Today';
+    } else if (isSameDay(date, yesterday)) {
+        return 'Yesterday';
+    } else {
+        return date.toLocaleDateString();
+    }
+}
+
+function isSameDay(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+}
+
 // Convert number to short number
 function short_number(value) {
     let formattedValue;

@@ -33,7 +33,7 @@
                             <!-- If user is the same than don't allow messaging -->
                             <button type="button" class="btn text-primary profile-btn-top">Message</button>
                         {% else %}
-                            <button type="button" class="btn text-primary profile-btn-top" data-bs-toggle="modal" data-bs-target="#chatModal" onclick="loadChat('{{ user.id }}', '{{ profile.id }}')">Message</button>
+                            <button type="button" class="btn text-primary profile-btn-top" data-bs-toggle="modal" data-bs-target="#chatModal" onclick="loadChat('{{ profile.avatar }}', '{{ profile.fname }}', '{{ user.id }}', '{{ profile.id }}')">Message</button>
                         {% endif %}
                     {% else %}
                         <button type="button" class="btn text-primary profile-btn-top">Posts</button>
