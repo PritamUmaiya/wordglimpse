@@ -48,6 +48,12 @@ function formatDateTime(datetimeStr) {
     return date.toLocaleDateString('en-US', options);
 }
 
+function formatDate(datetimeStr) {
+    let date = new Date(datetimeStr);
+    let options = { year: 'numeric', month: 'short', day: 'numeric'};
+    return date.toLocaleDateString('en-US', options);
+}
+
 function formatTime(datetimeStr) {
     let date = new Date(datetimeStr);
     
@@ -78,7 +84,7 @@ function formatDateLabel(date) {
     } else if (isSameDay(date, yesterday)) {
         return 'Yesterday';
     } else {
-        return date.toLocaleDateString();
+        return formatDate(date);
     }
 }
 

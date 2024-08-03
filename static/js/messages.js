@@ -1,4 +1,5 @@
 let sendMessageBtn;
+let currentUserId;
 
 document.addEventListener('DOMContentLoaded', function() {
     sendMessageBtn = document.getElementById('sendMessageBtn');
@@ -7,12 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
 const socket = io();
 
 function loadChat(avatar, fname, userId, profileId) {
+    currentUserId = parseInt(userId);
+
     fetch('/load_chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id: parseInt(userId), profile_id: parseInt(profileId) }),
+        body: JSON.stringify({ user_id: currentUserId, profile_id: parseInt(profileId) }),
     })
     .then(response => response.json())
     .then(data => {
@@ -36,11 +39,11 @@ function loadChat(avatar, fname, userId, profileId) {
 
             const messageElement = document.createElement('div');
             messageElement.setAttribute('class', 'd-flex flex-row mb-2');
-            if (msg.sender_id == userId) {
+            if (msg.sender_id == currentUserId) {
                 messageElement.classList.add('justify-content-end');
             }
             let textAlign = '';
-            if (msg.sender_id == userId) {
+            if (msg.sender_id == currentUserId) {
                 textAlign = 'text-end';
             }
             messageElement.innerHTML = `
@@ -52,6 +55,9 @@ function loadChat(avatar, fname, userId, profileId) {
             chatBody.appendChild(messageElement);
         });
 
+        // Scroll to bottom after loading chat
+        scrollToBottom();
+
         // Fill the receivers details 
         if (avatar != 'None') {
             document.getElementById('messageAvatar').setAttribute('src', avatar);
@@ -59,13 +65,12 @@ function loadChat(avatar, fname, userId, profileId) {
 
         document.getElementById('messageFname').innerText = fname;
 
-        const room = userId < profileId ? `${userId}-${profileId}` : `${profileId}-${userId}`;
+        const room = currentUserId < profileId ? `${currentUserId}-${profileId}` : `${profileId}-${currentUserId}`;
         socket.emit('join', { room: room });
 
-        sendMessageBtn.setAttribute('onclick', `sendMessage(${userId}, ${profileId})`);
+        sendMessageBtn.setAttribute('onclick', `sendMessage(${currentUserId}, ${profileId})`);
     });
 }
-
 
 function sendMessage(userId, profileId) {
     const messageInput = document.getElementById('messageInput');
@@ -73,7 +78,10 @@ function sendMessage(userId, profileId) {
     if (message === '') return;
 
     const room = userId < profileId ? `${userId}-${profileId}` : `${profileId}-${userId}`;
-    socket.emit('send_message', { user_id: userId, profile_id: profileId, message: message, room: room });
+    const date = new Date();
+    const time = formatTime(date);
+    socket.emit('send_message', { user_id: userId, profile_id: profileId, message: message, room: room, time: time });
+
     messageInput.value = '';
 }
 
@@ -81,21 +89,30 @@ socket.on('message', function(data) {
     const chatBody = document.getElementById('chatBody');
     const messageElement = document.createElement('div');
 
-    let time = formatTime(data.created_at);
+    // Check if the message is from the current user
+    const isCurrentUser = data.user_id === currentUserId;
 
     messageElement.setAttribute('class', 'd-flex flex-row mb-2');
-    if (data.sender_id == data.user_id) {
+    
+    if (isCurrentUser) {
         messageElement.classList.add('justify-content-end');
     }
-    let textAlign = '';
-    if (data.sender_id == data.user_id) {
-        textAlign = 'text-end';
-    }
+
+    const textAlign = isCurrentUser ? 'text-end' : '';
+
     messageElement.innerHTML = `
         <div class="card rounded px-3 py-2 d-flex flex-column" style="max-width:90%;">
             <span class="d-block">${data.message} </span>
-            <small class="d-block ${textAlign}">${time}</small>
+            <small class="d-block ${textAlign}">${data.time}</small>
         </div>
     `;
     chatBody.appendChild(messageElement);
+
+    // Scroll to bottom after appending new message
+    scrollToBottom();
 });
+
+function scrollToBottom() {
+    const chatBody = document.getElementById('chatBody');
+    chatBody.scrollTop = chatBody.scrollHeight;
+}

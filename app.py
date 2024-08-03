@@ -135,6 +135,7 @@ def handle_send_message(data):
     user_id = data['user_id']
     profile_id = data['profile_id']
     message = data['message']
+    time = data['time']
     
     db.execute("""
         INSERT INTO messages (sender_id, receiver_id, message) 
