@@ -182,6 +182,70 @@ def followers():
 
 
 
+@main_bp.route("/messages")
+@login_required
+def messages():
+    """Get the messages"""
+    page = int(request.args.get("page", 1))
+    offset = (page - 1) * 10
+
+    message_sender_ids = db.execute(
+        "SELECT DISTINCT sender_id FROM messages WHERE receiver_id = ? ORDER BY id DESC LIMIT 10 OFFSET ?",
+        session["user_id"], offset
+    )
+
+    messages_id = [row["sender_id"] for row in message_sender_ids]
+
+    messages = []
+    if len(messages_id) > 0:
+        # Get messages (sender_id), users (id, fname, avatar), last message, and unread message count
+        messages = db.execute(
+            """
+            SELECT 
+                m.sender_id, 
+                u.fname, 
+                u.avatar, 
+                COUNT(CASE WHEN m.seen = 0 THEN 1 END) AS unread_messages,
+                lm.message AS last_message
+            FROM 
+                messages m
+            JOIN 
+                users u ON m.sender_id = u.id
+            JOIN 
+                (SELECT sender_id, MAX(id) as last_message_id 
+                 FROM messages 
+                 WHERE receiver_id = ? 
+                 GROUP BY sender_id) lm_ids 
+                ON m.sender_id = lm_ids.sender_id 
+            JOIN 
+                messages lm ON lm.id = lm_ids.last_message_id
+            WHERE 
+                m.receiver_id = ? AND m.sender_id IN ({})
+            GROUP BY 
+                m.sender_id, u.fname, u.avatar, lm.message
+            ORDER BY 
+                lm_ids.last_message_id DESC
+            """.format(','.join('?' * len(messages_id))),
+            session["user_id"], session["user_id"], *messages_id
+        )
+
+    for message_id in messages_id:
+        messages = db.execute("SELECT COUNT(id) AS total FROM messages WHERE sender_id = ? AND receiver_id = ?", message_id)
+
+    total_messages = db.execute(
+        "SELECT COUNT(DISTINCT sender_id) AS total FROM messages WHERE receiver_id = ?",
+        session["user_id"]
+    )[0]["total"]
+
+    total_pages = (total_messages + 9) // 10
+
+    return render_template(
+        "messages.html",
+        messages=messages,
+        page=page,
+        total_pages=total_pages
+    )
+
 """ --- User Authentication routes --- """
 
 @main_bp.route("/signup", methods=["GET", "POST"])

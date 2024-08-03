@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Messages
+{% endblock %}
+
+{% block content %}
+    <section class="middle-content p-2">
+        <div class="middle-content-small">
+            <h5 class="mb-5 mt-3 text-primary">Messages</h5>
+
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mb-5">
+                    {% for message in messages %}
+                        <div class="card p-2 mb-3">
+                            <div class="row g-0">
+                                <div class="col-2">
+                                    <a href="/profile/{{ message.sender_id }}">
+                                        <img src="{% if message.avatar %}{{ message.avatar }}{% else %}/static/image/user.png{% endif %}" alt="User" class="rounded-circle object-fit-cover" style="width:55px; height:55px;">
+                                    </a>
+                                </div>
+                            
+                                <div class="col-7">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-truncate">
+                                            <a href="/profile/{{ message.sender_id }}" class="text-decoration-none text-bg">{{ message.fname }}</a>
+                                        </h5>
+                                        <p class="text-body-secondary text-truncate"><small>{{ message.last_message }}</small></p>
+                                    </div>
+                                </div>
+                                <div class="col-3 d-flex flex-row justify-content-center align-items-center gap-1">
+                                    <span class="badge rounded-circle text-bg-danger">{{ message.unread_messages }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            <!-- Next and Prev button with page number -->
+            <div class="d-flex justify-content-center mt-3">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if page > 1 %}
+                            <li class="page-item"><a class="page-link" href="/messages?page={{ page - 1 }}">Prev</a></li>
+                        {% endif %}
+                            <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+                        {% if page < total_pages %} 
+                            <li class="page-item"><a class="page-link" href="/messages?page={{ page + 1 }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% else %}
+                <p class="text-center text-body-secondary text-small">Start messaging to see them here!</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
